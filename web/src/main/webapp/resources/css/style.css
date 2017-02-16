@@ -1,0 +1,41 @@
+@CHARSET "ISO-8859-1";
+
+/*.ui-layout-resizer, .ui-layout-resizer-north, .ui-layout-resizer-open,
+.ui-layout-resizer-north-open{
+	height:0px !important;
+}*/
+
+.layout-principal {
+	position : inherit !important;
+}
+
+.cabecera {
+	min-height: 40px;
+	max-height: 80px;
+	background-color: black;
+}
+.cabecera .ui-widget-content {
+	background-color: black;
+}
+
+.menu {
+	background-color: red;
+	height: 100% !important;
+}
+.menu .ui-widget-content {
+	background-color: red;
+}
+
+.contenido {
+	background-color: green;
+	height: 100% !important;
+}
+.contenido .ui-widget-content {
+	background-color: green;
+}
+
+
+.menu {
+	min-width: 45px;
+	height: 100%; 
+}

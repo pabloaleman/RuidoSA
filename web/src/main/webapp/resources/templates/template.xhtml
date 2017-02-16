@@ -1,0 +1,41 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+	<h:head>
+        <f:facet name="first">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+            <meta name="apple-mobile-web-app-capable" content="yes" />
+            <meta name="theme-color" content="#{guestPreferences.themeColors[guestPreferences.theme]}" />
+        </f:facet>
+        <title>#{titulos.tituloHead}</title>
+        <h:outputStylesheet library="css" name="style.css" />
+    </h:head>
+    <h:body>
+    	<p:layout id="layoutPrincipal" styleClass="layout-principal" fullPage="true">
+			<p:layoutUnit position="north" resizable="false" styleClass="cabecera" id="cabecera">
+				cabecera
+			</p:layoutUnit>
+			<p:layoutUnit position="west" id="menu" styleClass="menu" header="menu" collapsible="true" >
+				<ui:insert name="menu">
+					<h:form>
+						<p:commandButton id="menuBotoninicio" action="#{menuController.inicio}" value="Inicio" />
+						<p:commandButton id="menuBotonSubirArchivo" action="#{menuController.subirArchivo}" value="subirArchivo" />
+					</h:form>
+				</ui:insert>
+			</p:layoutUnit>
+			<p:layoutUnit position="center" id="contenidoLU" styleClass="contenido">
+				
+				<ui:insert name="contenido"></ui:insert>
+			</p:layoutUnit>
+			<!-- <p:layoutUnit position="south" id="pie">
+				pie
+			</p:layoutUnit> -->
+			
+		</p:layout>
+    </h:body>
+</html>
