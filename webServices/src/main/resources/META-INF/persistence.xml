@@ -4,16 +4,16 @@
 	<persistence-unit name="ruidoPU"
 		transaction-type="RESOURCE_LOCAL">
 		<provider>org.hibernate.ejb.HibernatePersistence</provider>
-                <class>com.sertec.domain.Estacion</class>
-                <class>com.sertec.domain.ArchivoBinario</class>
-                <class>com.sertec.domain.Usuario</class>
-                <class>com.sertec.domain.ArchivoDatos</class>
-                <class>com.sertec.domain.DatoHorario</class>
-                <class>com.sertec.domain.Promedio</class>
-                <class>com.sertec.domain.MaximoMinimo</class>
-                <class>com.sertec.domain.TipoPromedio</class>
-                <class>com.sertec.domain.Configuracion</class>
-                <class>com.sertec.domain.Rol</class>
+		<class>com.sertec.domain.ArchivoBinario</class>
+		<class>com.sertec.domain.ArchivoDatos</class>
+		<class>com.sertec.domain.Catalogo</class>
+		<class>com.sertec.domain.Configuracion</class>
+		<class>com.sertec.domain.Dato</class>
+		<class>com.sertec.domain.Estacion</class>
+		<class>com.sertec.domain.MensajesDeError</class>
+		<class>com.sertec.domain.Parametro</class>
+		<class>com.sertec.domain.Rol</class>
+		<class>com.sertec.domain.Usuario</class>
                 
                 
 		<properties>

@@ -8,7 +8,6 @@ import java.util.Set;
 
 import javax.inject.Named;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -18,8 +17,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.sertec.daos.UsuarioDao;
-import com.sertec.domain.Usuario;
 import com.sertec.domain.Rol;
+import com.sertec.domain.Usuario;
+import com.sertec.exceptions.NoUsuarioEncontradoException;
 
 @Service
 @Named("myUserDetailsService")
@@ -28,11 +28,16 @@ public class MyUserDetailsService implements UserDetailsService {
 	UsuarioDao usuarioDao = new UsuarioDao();
 
 	public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
-		
-		Usuario user = usuarioDao.findByUserName(username);
-		List<GrantedAuthority> authorities = buildUserAuthority(user.getRoles());
+		try {
+			Usuario user = usuarioDao.findByUserName(username);
+			List<GrantedAuthority> authorities = buildUserAuthority(user.getRoles());
 
-		return buildUserForAuthentication(user, authorities);
+			return buildUserForAuthentication(user, authorities);
+		} catch (NoUsuarioEncontradoException e) {
+			System.out.println(e.getMessage());
+			return null;
+		}
+		
 		
 
 	}

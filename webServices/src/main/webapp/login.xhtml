@@ -18,29 +18,33 @@
     </h:head>
 
     <h:body styleClass="login-body">
-        <div class="card login-panel ui-fluid">
-            <div class="ui-g">
-                <div class="ui-g-12">
-                    <p:graphicImage name="images/logo-ultima.svg" library="ultima-layout" />
-                </div>
-                <div class="ui-g-12">
-                    <h:panelGroup styleClass="md-inputfield">
-                        <p:inputText />
-                        <label>Username</label>
-                    </h:panelGroup>
-                </div>
-                <div class="ui-g-12">
-                    <h:panelGroup styleClass="md-inputfield">
-                        <p:password />
-                        <label>Password</label>
-                    </h:panelGroup>
-                </div>
-                <div class="ui-g-12">
-                    <p:button outcome="/dashboard" value="Sign In" icon="ui-icon-person" />
-                    <p:button outcome="/dashboard" value="Forgot Password" icon="ui-icon-help" styleClass="secondary"/>
-                </div>
-            </div>
-        </div>
+    	<h:form id="loginForm" prependId="false">
+    		<p:growl id="msgs" showDetail="true" autoUpdate="true"/>
+	        <div class="card login-panel ui-fluid">
+	            <div class="ui-g">
+	                <div class="ui-g-12">
+	                    <p:graphicImage name="images/logo-ultima.svg" library="ultima-layout" />
+	                </div>
+	                <div class="ui-g-12">
+	                    <h:panelGroup styleClass="md-inputfield">
+	                        <p:inputText id="username" required="true" />
+	                        <label>Username</label>
+	                    </h:panelGroup>
+	                </div>
+	                <div class="ui-g-12">
+	                    <h:panelGroup styleClass="md-inputfield">
+	                        <p:password id="password" required="true" />
+	                        <label>Password</label>
+	                    </h:panelGroup>
+	                </div>
+	                <div class="ui-g-12">
+<!-- 	                	<p:commandButton action="#{loginController.doLogin2}" value="Ingresar" icon="ui-icon-person" process="@form" update="@all"/> -->
+	                	<p:commandButton action="#{loginController.doLogin}" value="Ingresar" process="@form" update="@all" ajax="false"/>
+	                    <p:button outcome="/dashboard" value="Forgot Password" icon="ui-icon-help" styleClass="secondary"/>
+	                </div>
+	            </div>
+	        </div>
+        </h:form>
         
         <div class="login-footer">PrimeFaces Ultima</div>
         

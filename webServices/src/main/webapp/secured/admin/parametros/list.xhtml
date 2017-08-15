@@ -1,0 +1,97 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="title">Dashboard</ui:define>
+
+    <ui:define name="head">
+           <script type="text/javascript">
+               //<![CDATA[
+               function skinChart() {
+                   this.cfg.shadow = false;
+                   this.cfg.title = '';
+                   this.cfg.seriesColors = ['#FFC107', '#03A9F4'];
+                   this.cfg.grid = {
+                       background: '#ffffff',
+                       borderColor: '#ffffff',
+                       gridLineColor: '#EEEEEE',
+                       shadow: false
+                   };
+                   this.cfg.axesDefaults = {
+                       rendererOptions: {
+                           textColor: '#212121'
+                       }
+                   };
+                   this.cfg.seriesDefaults = {
+                       shadow: false,
+                       lineWidth: 1,
+                       markerOptions: {
+                           shadow: false,
+                           size: 7,
+                           style: 'circle'
+                       }
+                   }
+               }
+               //]]>  
+           </script>
+           <style type="text/css">
+               .main-content {
+                   padding: 0;
+               }
+           </style>
+       </ui:define>
+
+    <ui:define name="content">
+    	<h:form id="form">
+	    	<p:growl id="msgs" showDetail="true"/>
+	    	<p:dataTable id="parametrosList" var="parametro" value="#{parametroController.parametros}" >
+		       <f:facet name="header">
+		           #{msg.parametrosSistema}
+		       </f:facet>
+		 
+		       <p:column headerText="#{msg.descripcion}">
+		       		<p:outputLabel value="#{parametro.descripcion}" />
+		       </p:column>
+		       
+		       <p:column headerText="#{msg.canal}">
+		       		<p:outputLabel value="#{parametro.canal.descripcion}" />
+		       </p:column>
+		       
+		       <p:column headerText="#{msg.perfil}">
+		       		<p:outputLabel value="#{parametro.perfil.descripcion}" />
+		       </p:column>
+		       
+		       <p:column headerText="#{msg.medida}">
+		       		<p:outputLabel value="#{parametro.medida.descripcion}" />
+		       </p:column>
+		       
+		       <p:column headerText="#{msg.nivel}">
+		       		<p:outputLabel value="#{parametro.nivel.descripcion}" />
+		       </p:column>
+		       
+		       <p:column headerText="#{msg.principal}">
+		       		<p:outputLabel value="#{parametro.principal ? 'SI' : 'NO'}" />
+		       </p:column>
+		       
+		       <p:column headerText="#{msg.guardaBdd}">
+		       		<p:outputLabel value="#{parametro.guarda ? 'SI' : 'NO'}" />
+		       </p:column>
+		       
+		       <p:column headerText="#{msg.calculaPromedios}">
+		       		<p:outputLabel value="#{parametro.calculaPromedios ? 'SI' : 'NO'}" />
+		       </p:column>
+		       
+		       <p:column  style="width:32px;text-align: center">
+		       		<p:commandButton icon="ui-icon-edit" action="#{parametroController.editaParametro(parametro)}" />
+		       </p:column>
+		   </p:dataTable>
+		   <br/>
+		   <p:commandButton value="#{msg.crear} #{msg.parametro}" action="#{parametroController.creaParametro}" />
+	   </h:form>
+    	
+    </ui:define>
+
+</ui:composition>

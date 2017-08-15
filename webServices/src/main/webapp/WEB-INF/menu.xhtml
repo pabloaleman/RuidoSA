@@ -11,10 +11,10 @@
             <div class="nano">
                 <div class="nano-content menu-scroll-content">
                     <ui:fragment rendered="#{guestPreferences.profileMode == 'inline' and guestPreferences.menuLayout != 'menu-layout-static menu-layout-horizontal'}">
+                    	<p:panel id="usuarioPanel" rendered="#{not empty loginController.usuario}">
                         <div class="profile">
-                            <div class="profile-image"></div>
                             <a id="profile-options" href="#">
-                                <span class="profile-name">Usuario</span>
+                                <span class="profile-name">#{loginController.usuario.nombre}</span>
                                 <i class="material-icons">&#xE313;</i>
                             </a>
                         </div>
@@ -22,34 +22,28 @@
                         <ul id="profile-menu" class="ultima-menu">
                             <li role="menuitem">
                                 <a href="#" class="ripplelink">
-                                    <i class="material-icons">person</i>
-                                    <span>Profile</span>
-                                </a>
-                            </li>
-                            <li role="menuitem">
-                                <a href="#" class="ripplelink">
-                                    <i class="material-icons">security</i>
-                                    <span>Privacy</span>
-                                </a>
-                            </li>
-                            <li role="menuitem">
-                                <a href="#" class="ripplelink">
                                     <i class="material-icons">settings_application</i>
-                                    <span>Settings</span>
+                                    <span>#{msg.cambiarContrasenia}</span>
                                 </a>
                             </li>
-                            <li role="menuitem">
-                                <a href="#" class="ripplelink">
-                                    <i class="material-icons">power_settings_new</i>
-                                    <span>Logout</span>
-                                </a>
-                            </li>
+                            
+                            <h:form id="logoutForm">
+                            	<li role="menuitem">
+	                                 <p:commandLink action="#{loginController.doLogout}"
+	                                 	update="@all" >
+	                                    <i class="material-icons">&#xE8AC;</i>
+	                                    <span>#{msg.salirDelSistema}</span>
+	                                </p:commandLink>
+	                            </li>
+	                        </h:form>
                         </ul>
+                        </p:panel>
                     </ui:fragment>
                     
                     <pu:menu widgetVar="me">
-                        <p:menuitem id="subeArchivo" value="#{msg.menuSubeArchivos}" icon="&#xE871;" outcome="/pages/subirArchivo.xhtml"/>
-                        <p:menuitem id="configuracion" value="#{msg.menuConfiguracion}" icon="&#xE871;" outcome="/pages/configuracion.xhtml"/>
+                        <p:menuitem id="subeArchivo" value="#{msg.menuSubeArchivos}" icon="file_upload" outcome="/secured/carga/subirArchivo.xhtml"/>
+                        <p:menuitem id="configuracion" value="#{msg.menuConfiguracion}" icon="settings" outcome="/secured/admin/configuracion.xhtml"/>
+                        <p:menuitem id="calculaPromedios" value="#{msg.calculaPromedios}" icon="exposure" action="#{calculaPromediosController.goCalculaPromedios}" />
                         <p:submenu id="themes" label="Themes" icon="palette">
                             <p:menuitem id="theme1" value="Indigo - Pink" icon="brush" actionListener="#{guestPreferences.setTheme('indigo')}" ajax="false" />
                             <p:menuitem id="theme2" value="Brown - Green" icon="brush" actionListener="#{guestPreferences.setTheme('brown')}" ajax="false" />

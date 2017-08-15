@@ -1,0 +1,178 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="title">Subir archivo</ui:define>
+
+    <ui:define name="head">
+           <script type="text/javascript">
+               //<![CDATA[
+               function skinChart() {
+                   this.cfg.shadow = false;
+                   this.cfg.title = '';
+                   this.cfg.seriesColors = ['#FFC107', '#03A9F4'];
+                   this.cfg.grid = {
+                       background: '#ffffff',
+                       borderColor: '#ffffff',
+                       gridLineColor: '#EEEEEE',
+                       shadow: false
+                   };
+                   this.cfg.axesDefaults = {
+                       rendererOptions: {
+                           textColor: '#212121'
+                       }
+                   };
+                   this.cfg.seriesDefaults = {
+                       shadow: false,
+                       lineWidth: 1,
+                       markerOptions: {
+                           shadow: false,
+                           size: 7,
+                           style: 'circle'
+                       }
+                   }
+               }
+               //]]>  
+           </script>
+           <style type="text/css">
+               .main-content {
+                   padding: 0;
+               }
+           </style>
+       </ui:define>
+
+    <ui:define name="content">
+    	<p:growl autoUpdate="true" showDetail="true" />
+    	<div class="ui-fluid">
+                <div class="ui-g">
+                    <div class="ui-g-12">
+                        <div class="card card-w-title">
+                        	
+					    	<p:panel id="subirArchivos" rendered="#{subeArchivoController.presentaSubeArchivo}">
+						    	<f:facet name="Subir Archivos"></f:facet>
+						        <h:form id="formSubeArchivo" enctype="multipart/form-data">
+						        		<p:growl globalOnly="true" autoUpdate="true" showDetail="true" id="mensajes" />
+						                <p:fileUpload id="subeArchivoComponente"
+						                	fileUploadListener="#{subeArchivoController.handleFileUpload}"
+						                	mode="advanced"
+						                	dragDropSupport="true"
+						                	update="@all"
+						                	value="#{subeArchivoController.file}"
+						                	allowTypes="/(\.|\/)(xlsx)$/"
+						                	cancelLabel="Cancelar"
+						                	uploadLabel="Subir"
+						                	required="true"
+						                	requiredMessage="#{msg.noArchivoSeleccionado}"
+						                	invalidFileMessage="#{msg.xlsxInvalidExt}" />
+						        </h:form>
+					        </p:panel>
+					        
+					        <p:panel id="datosASubir" rendered="#{subeArchivoController.presentaTablaDatos}">
+					        	<h:form>
+					        		
+						        	<p:panelGrid columns="2">
+							            	<p:outputLabel value="#{msg.estacion}" for="estacionSelect"/>
+							            	<p:selectOneMenu id="estacionSelect"
+							            		value="#{estacionController.estacionSeleccionada}"
+							            		required="true"
+							            		requiredMessage="#{msg.estacionNoSeleccionada}"
+							            		converter="#{estacionConverter}" >
+							            		<f:selectItem itemLabel="#{msg.seleccione}" value="#{null}" noSelectionOption="true"/>
+							            		<f:selectItems value="#{estacionController.estacionesActivas}"
+							            			var="estacion" itemLabel="#{estacion.nombre}" itemValue="#{estacion}"/>
+							            		<p:ajax update="@this" event="change" />
+							            	</p:selectOneMenu>
+							            </p:panelGrid>
+							            <p:commandButton action="#{subeArchivoController.reiniciaForm}" update="@all" process="@this" value="#{msg.cancelar}" />
+						        		<p:commandButton action="#{subeArchivoController.procesaDatos}" update="@all" process="@form" value="#{msg.procesar}" />
+							        <p:accordionPanel>
+							        	<p:tab title="#{msg.parametrosEncontradosEnBdd}" >
+							        		<p:dataTable id="tablaParametrosCargar" value="#{subeArchivoController.parametrosACargar}" var="parametro">
+							        			<p:column headerText="#{msg.descripcion}">
+										       		<p:outputLabel value="#{parametro.descripcion}" />
+										       </p:column>
+										       
+										       <p:column headerText="#{msg.canal}">
+										       		<p:outputLabel value="#{parametro.canal.descripcion}" />
+										       </p:column>
+										       
+										       <p:column headerText="#{msg.perfil}">
+										       		<p:outputLabel value="#{parametro.perfil.descripcion}" />
+										       </p:column>
+										       
+										       <p:column headerText="#{msg.medida}">
+										       		<p:outputLabel value="#{parametro.medida.descripcion}" />
+										       </p:column>
+										       
+										       <p:column headerText="#{msg.nivel}">
+										       		<p:outputLabel value="#{parametro.nivel.descripcion}" />
+										       </p:column>
+										       
+										       <p:column headerText="#{msg.principal}">
+										       		<p:outputLabel value="#{parametro.principal ? 'SI' : 'NO'}" />
+										       </p:column>
+										       
+										       <p:column headerText="#{msg.guardaBdd}">
+										       		<p:outputLabel value="#{parametro.guarda ? 'SI' : 'NO'}" />
+										       </p:column>
+							        		</p:dataTable>
+							        	</p:tab>
+							        	
+							        	<p:tab title="#{msg.parametrosNoBdd}" >
+							        		<p:dataTable id="tablaParametrosNoCargar" value="#{subeArchivoController.parametrosNoBdd}" var="parametro">
+										       
+										       <p:column headerText="#{msg.canal}">
+										       		<p:outputLabel value="#{parametro.canal.descripcion}" />
+										       </p:column>
+										       
+										       <p:column headerText="#{msg.perfil}">
+										       		<p:outputLabel value="#{parametro.perfil.descripcion}" />
+										       </p:column>
+										       
+										       <p:column headerText="#{msg.medida}">
+										       		<p:outputLabel value="#{parametro.medida.descripcion}" />
+										       </p:column>
+										       
+										       <p:column headerText="#{msg.nivel}">
+										       		<p:outputLabel value="#{parametro.nivel.descripcion}" />
+										       </p:column>
+										       
+							        		</p:dataTable>
+							        	</p:tab>
+							        	<p:tab title="#{msg.datosEncontrados}">
+							        		<p:dataTable value="#{subeArchivoController.preprocesoArchivoBean.datosPrincipales}"
+								        		var="dato" >
+								        		<p:column headerText="#{msg.canal}">
+								        			<p:outputLabel value="#{dato.parametro.canal.descripcion}" />
+								        		</p:column>
+								        		<p:column headerText="#{msg.perfil}">
+								        			<p:outputLabel value="#{dato.parametro.perfil.descripcion}" />
+								        		</p:column>
+								        		<p:column headerText="#{msg.medida}">
+								        			<p:outputLabel value="#{dato.parametro.medida.descripcion}" />
+								        		</p:column>
+								        		<p:column headerText="#{msg.fecha}">
+								        			<p:outputLabel value="#{dato.fecha}" />
+								        		</p:column>
+								        		<p:column headerText="#{msg.valor}">
+								        			<p:outputLabel value="#{dato.valor}" />
+								        		</p:column>
+								        	</p:dataTable>
+							        	</p:tab>
+							        </p:accordionPanel>
+						        	
+						        	<br/>
+						        	<p:commandButton action="#{subeArchivoController.reiniciaForm}" update="@all" process="@this" value="#{msg.cancelar}" />
+						        	<p:commandButton action="#{subeArchivoController.procesaDatos}" update="@all" process="@form" value="#{msg.procesar}" />
+						        </h:form>
+					        </p:panel>
+					      </div>
+					 </div>
+				</div>
+			</div>
+    </ui:define>
+
+</ui:composition>

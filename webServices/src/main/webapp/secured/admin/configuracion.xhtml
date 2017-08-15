@@ -1,0 +1,82 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="title">Dashboard</ui:define>
+
+    <ui:define name="head">
+           <script type="text/javascript">
+               //<![CDATA[
+               function skinChart() {
+                   this.cfg.shadow = false;
+                   this.cfg.title = '';
+                   this.cfg.seriesColors = ['#FFC107', '#03A9F4'];
+                   this.cfg.grid = {
+                       background: '#ffffff',
+                       borderColor: '#ffffff',
+                       gridLineColor: '#EEEEEE',
+                       shadow: false
+                   };
+                   this.cfg.axesDefaults = {
+                       rendererOptions: {
+                           textColor: '#212121'
+                       }
+                   };
+                   this.cfg.seriesDefaults = {
+                       shadow: false,
+                       lineWidth: 1,
+                       markerOptions: {
+                           shadow: false,
+                           size: 7,
+                           style: 'circle'
+                       }
+                   }
+               }
+               //]]>  
+           </script>
+           <style type="text/css">
+               .main-content {
+                   padding: 0;
+               }
+           </style>
+       </ui:define>
+
+    <ui:define name="content">
+    	<h:form id="form">
+	    	<p:growl id="msgs" showDetail="true"/>
+	    	<p:dataTable id="configuraciones" var="configuracion" value="#{configuracionController.configuraciones}" editable="true" editMode="cell" widgetVar="configuraciones">
+		       <f:facet name="header">
+		           #{msg.configuracionesSistema}
+		       </f:facet>
+		 
+		       <p:ajax event="cellEdit" listener="#{configuracionController.onCellEdit}" update="@form"/>
+		 
+		       <p:column headerText="#{msg.descripcion}">
+		       		<p:outputLabel value="#{configuracion.descripcion}" />
+		       </p:column>
+		 
+		       <p:column headerText="#{msg.configuracionValor}">
+		           <p:cellEditor>
+		               <f:facet name="output"><h:outputText value="#{configuracion.valor}" /></f:facet>
+		               <f:facet name="input"><p:inputText value="#{configuracion.valor}" style="width:96%"/></f:facet>
+		           </p:cellEditor>
+		       </p:column>
+		   </p:dataTable>
+		   <br/>
+		   <p:commandLink value="#{msg.adminParametro}" action="#{parametroController.adminParametros}" />
+		   <br/>
+		   <p:commandLink value="#{msg.adminCanales}" action="#{catalogoController.administraCatalogos('CANAL')}" />
+		   <br/>
+		   <p:commandLink value="#{msg.adminPerfil}" action="#{catalogoController.administraCatalogos('PERFIL')}" />
+		   <br/>
+		   <p:commandLink value="#{msg.adminMedidas}" action="#{catalogoController.administraCatalogos('MEDIDA')}" />
+		   <br/>
+		   <p:commandLink value="#{msg.adminNiveles}" action="#{catalogoController.administraCatalogos('NIVEL')}" />
+	   </h:form>
+    	
+    </ui:define>
+
+</ui:composition>

@@ -11,8 +11,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -63,6 +61,9 @@ public class Usuario implements Serializable {
     @Size(min = 1, max = 255)
     @Column(name = "foto")
     private String foto;
+    
+    @Column(name = "enabled")
+    private boolean enabled;
     
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuario")
@@ -150,6 +151,18 @@ public class Usuario implements Serializable {
 	public void setRoles(Set<Rol> roles) {
 		this.roles = roles;
 	}
+
+
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}
+	
+	
 	
 	
 

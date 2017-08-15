@@ -46,6 +46,6 @@ public class MaximoMinimo implements Serializable {
 	
 	@JoinColumn(name = "tipoPromedio", referencedColumnName = "id", insertable = false, updatable = false)
     @ManyToOne(optional = false)
-	private TipoPromedio tipoPromedio;
+	private Catalogo tipoPromedio;
 
 }

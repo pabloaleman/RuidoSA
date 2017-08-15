@@ -38,6 +38,9 @@ public class ArchivoBinario implements Serializable {
 	@Size(min = 1, max = 255)
 	@Column(name = "nombre")
 	private String nombre;
+
+	@Column(name = "contenido")
+	private byte[] contenido;
 	
 	@Basic(optional = false)
 	@NotNull
@@ -54,7 +57,8 @@ public class ArchivoBinario implements Serializable {
 	@JoinColumn(name = "estacion", referencedColumnName = "id")
     @ManyToOne(optional = false)
 	private Estacion estacion;
-
+	
+	
 	public Long getId() {
 		return id;
 	}
@@ -94,5 +98,15 @@ public class ArchivoBinario implements Serializable {
 	public void setMd5(String md5) {
 		this.md5 = md5;
 	}
+
+	public byte[] getContenido() {
+		return contenido;
+	}
+
+	public void setContenido(byte[] contenido) {
+		this.contenido = contenido;
+	}
+	
+	
 	
 }

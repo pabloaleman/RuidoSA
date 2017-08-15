@@ -10,7 +10,7 @@ import com.sertec.domain.Estacion;
 
 
 @Repository
-public class EstacionDao extends AbstractFacade<EstacionDao> {
+public class EstacionDao {
 	
 	@PersistenceContext(unitName = "ruidoPU")
     private EntityManager em;
@@ -30,13 +30,11 @@ public class EstacionDao extends AbstractFacade<EstacionDao> {
 				.getResultList();
 		return estaciones.isEmpty() ? null : estaciones.get(0);
 	}
-	public EstacionDao() {
-		super(EstacionDao.class);
+	
+	public Estacion getById(Long id) {
+		List<Estacion> estaciones = em.createNamedQuery("Estacion.getById", Estacion.class)
+				.setParameter("id", id)
+				.getResultList();
+		return estaciones.isEmpty() ? null : estaciones.get(0);
 	}
-
-	@Override
-	protected EntityManager getEntityManager() {
-		throw new UnsupportedOperationException("Not supported yet."); 
-	}
-
 }

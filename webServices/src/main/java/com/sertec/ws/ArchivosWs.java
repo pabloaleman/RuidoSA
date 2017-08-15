@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import com.megasoftworks.gl.util.MD5;
 import com.sertec.domain.ArchivoBinario;
+import com.sertec.domain.Configuracion;
 import com.sertec.lb.ArchivoBinarioLB;
+import com.sertec.lb.ConfiguracionLB;
 import com.sertecimedco.ruido.clasesComunes.HayArchivoResponse;
 import com.sertecimedco.ruido.clasesComunes.SubeArchivoRequest;
 import com.sertecimedco.ruido.clasesComunes.SubeArchivoResponse;
@@ -28,6 +30,9 @@ public class ArchivosWs {
 
 	@Autowired
 	ArchivoBinarioLB archivoBinarioLB;
+	
+	@Autowired
+	ConfiguracionLB configuracionLB;
 
 	@RequestMapping(value = "hayArchivo/{nombreArchivo}/{estacion}", method = RequestMethod.POST)
 	public @ResponseBody HayArchivoResponse hayArchivo(@PathVariable("nombreArchivo") String nombreArchivo,
@@ -62,16 +67,24 @@ public class ArchivosWs {
 //		if (!archivoBinarioLB.hayArchivo(archivoRequest.getNombreArchivo(),
 //				archivoRequest.getEstacion())) {
 
-			String path = "C:\\archivosSubidos" + File.separator + archivoRequest.getEstacion() + File.separator + archivoRequest.getNombreArchivo();
+		Configuracion configPath = configuracionLB.getConfiguracionPorItem("PATH_LOCAL");
+			String path = configPath.getValor() + File.separator + archivoRequest.getEstacion();
 			try {
+				if(!(new File(path).exists())) {
+					LOGGER.warn("Se va a crear el directorio: " + path);
+					new File(path).mkdirs();
+					
+				}
+				String pathArchivo = path + File.separator + archivoRequest.getNombreArchivo();
 				//Se escribe el archivo en el disco
-				FileUtils.writeByteArrayToFile(new File(path), archivoRequest.getContenido());
-				File archivo = new File(path);
+				FileUtils.writeByteArrayToFile(new File(pathArchivo), archivoRequest.getContenido());
+				File archivo = new File(pathArchivo);
 				String md5 = MD5.fileMd5Sum(archivo);
 				if(md5.equals(archivoRequest.getMd5())) {
 					ArchivoBinario ab = new ArchivoBinario();
 					ab.setFechaSubida(new Date());
 					ab.setNombre(archivoRequest.getNombreArchivo());
+					ab.setContenido(archivoRequest.getContenido());
 					ab.setMd5(md5);
 					retorno.setProblema(!archivoBinarioLB.save(ab, archivoRequest.getEstacion()));
 					if(!retorno.isProblema()) {

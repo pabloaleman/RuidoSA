@@ -1,0 +1,72 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="title">Dashboard</ui:define>
+
+    <ui:define name="head">
+           <script type="text/javascript">
+               //<![CDATA[
+               function skinChart() {
+                   this.cfg.shadow = false;
+                   this.cfg.title = '';
+                   this.cfg.seriesColors = ['#FFC107', '#03A9F4'];
+                   this.cfg.grid = {
+                       background: '#ffffff',
+                       borderColor: '#ffffff',
+                       gridLineColor: '#EEEEEE',
+                       shadow: false
+                   };
+                   this.cfg.axesDefaults = {
+                       rendererOptions: {
+                           textColor: '#212121'
+                       }
+                   };
+                   this.cfg.seriesDefaults = {
+                       shadow: false,
+                       lineWidth: 1,
+                       markerOptions: {
+                           shadow: false,
+                           size: 7,
+                           style: 'circle'
+                       }
+                   }
+               }
+               //]]>  
+           </script>
+           <style type="text/css">
+               .main-content {
+                   padding: 0;
+               }
+           </style>
+       </ui:define>
+
+    <ui:define name="content">
+    	<h:form id="form">
+	    	<p:growl id="msgs" showDetail="true"/>
+	    	<p:dataTable id="catalogosList" var="catalogo" value="#{catalogoController.catalogos}" >
+		       <f:facet name="header">
+		           #{msg.listadoDe} #{catalogoController.tipoEnum.plural}
+		       </f:facet>
+		 
+		       <p:column headerText="#{msg.acronimo}">
+		       		<p:outputLabel value="#{catalogo.acronimo}" />
+		       </p:column>
+		       
+		       <p:column headerText="#{msg.descripcion}">
+		       		<p:outputLabel value="#{catalogo.descripcion}" />
+		       </p:column>
+		       <p:column  style="width:32px;text-align: center">
+		       		<p:commandButton icon="ui-icon-edit" action="#{catalogoController.editaCatalogo(catalogo)}" />
+		       </p:column>
+		   </p:dataTable>
+		   <br/>
+		   <p:commandButton value="#{msg.crear} #{catalogoController.tipoEnum.nombre}" action="#{catalogoController.creaCatalogo}" />
+	   </h:form>
+    	
+    </ui:define>
+
+</ui:composition>

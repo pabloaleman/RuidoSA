@@ -1,0 +1,11 @@
+@CHARSET "ISO-8859-1";
+
+.fa-fontAwesome.fa, .fa-fontAwesome .fa {
+  font-family: 'FontAwesome';
+}
+
+.ui-icon { width: 16px; height: 16px; background-image: url("#{resource['primefaces-YOUR-THEME-NAME:images/ui-icons_626262_256x240.png']}");}
+
+.layout-wrapper .layout-menu .profile {
+    height: auto !important;
+}

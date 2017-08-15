@@ -1,0 +1,120 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="title">Dashboard</ui:define>
+
+    <ui:define name="head">
+           <script type="text/javascript">
+               //<![CDATA[
+               function skinChart() {
+                   this.cfg.shadow = false;
+                   this.cfg.title = '';
+                   this.cfg.seriesColors = ['#FFC107', '#03A9F4'];
+                   this.cfg.grid = {
+                       background: '#ffffff',
+                       borderColor: '#ffffff',
+                       gridLineColor: '#EEEEEE',
+                       shadow: false
+                   };
+                   this.cfg.axesDefaults = {
+                       rendererOptions: {
+                           textColor: '#212121'
+                       }
+                   };
+                   this.cfg.seriesDefaults = {
+                       shadow: false,
+                       lineWidth: 1,
+                       markerOptions: {
+                           shadow: false,
+                           size: 7,
+                           style: 'circle'
+                       }
+                   }
+               }
+               //]]>  
+           </script>
+           <style type="text/css">
+               .main-content {
+                   padding: 0;
+               }
+           </style>
+       </ui:define>
+
+    <ui:define name="content">
+    	<h:form id="form">
+	    	<p:growl id="msgs" showDetail="true"/>
+	    	<p:panelGrid columns="2">
+	    		<p:outputLabel value="#{msg.descripcion}" for="descripcion" />
+	    		<p:inputText id="descripcion" value="#{parametroController.parametro.descripcion}"
+	    			required="true" requiredMessage="#{msg.descripcionObligatorio}" />
+	    		
+	    		<p:outputLabel value="#{msg.canal}"  for="canal"/>
+	    		<p:selectOneMenu id="canal" value="#{parametroController.parametro.canal}"
+	    			required="true" requiredMessage="#{msg.canalObligatorio}"
+	    			converter="#{catalogoConverter}" >
+	    			<f:selectItem itemLabel="#{msg.seleccione}" value="#{null}" noSelectionOption="true"/>
+	    			<f:selectItems value="#{parametroController.canales}"
+	    				var="canalV" itemLabel="#{canalV.descripcion}"
+	    				itemValue="#{canalV}"/>
+	    			<p:ajax event="change" update="@this" />
+	    		</p:selectOneMenu>
+	    		
+	    		<p:outputLabel value="#{msg.perfil}"  for="perfil"/>
+	    		<p:selectOneMenu id="perfil" value="#{parametroController.parametro.perfil}"
+	    			required="true" requiredMessage="#{msg.perfilObligatorio}"
+	    			converter="#{catalogoConverter}" >
+	    			<f:selectItem itemLabel="#{msg.seleccione}" value="#{null}" noSelectionOption="true"/>
+	    			<f:selectItems value="#{parametroController.perfiles}"
+	    				var="perfilV" itemLabel="#{perfilV.descripcion}"
+	    				itemValue="#{perfilV}"/>
+	    			<p:ajax event="change" update="@this" />
+	    		</p:selectOneMenu>
+	    		
+	    		<p:outputLabel value="#{msg.medida}"  for="medida"/>
+	    		<p:selectOneMenu id="medida" value="#{parametroController.parametro.medida}"
+	    			required="true" requiredMessage="#{msg.medidaObligatoria}"
+	    			converter="#{catalogoConverter}" >
+	    			<f:selectItem itemLabel="#{msg.seleccione}" value="#{null}" noSelectionOption="true"/>
+	    			<f:selectItems value="#{parametroController.medidas}"
+	    				var="medidaV" itemLabel="#{medidaV.descripcion}"
+	    				itemValue="#{medidaV}"/>
+	    			<p:ajax event="change" update="@this" />
+	    		</p:selectOneMenu>
+	    		
+	    		<p:outputLabel value="#{msg.nivel}"  for="nivel"/>
+	    		<p:selectOneMenu id="nivel" value="#{parametroController.parametro.nivel}"
+	    			required="true" requiredMessage="#{msg.nivelObligatorio}"
+	    			converter="#{catalogoConverter}" >
+	    			<f:selectItem itemLabel="#{msg.seleccione}" value="#{null}" noSelectionOption="true"/>
+	    			<f:selectItem itemLabel="#{msg.noAplica}" value="#{parametroController.nivelNA}" />
+	    			<f:selectItems value="#{parametroController.niveles}"
+	    				var="nivelV" itemLabel="#{nivelV.descripcion}"
+	    				itemValue="#{nivelV}"/>
+	    			<p:ajax event="change" update="@this" />
+	    		</p:selectOneMenu>
+	    		
+	    		<p:outputLabel value="#{msg.guardaBdd}" for="guarda"/>
+	    		<p:selectBooleanButton id="guarda" onLabel="#{msg.si}" offLabel="#{msg.no}" value="#{parametroController.parametro.guarda}"
+	    			onIcon="ui-icon-check" offIcon="ui-icon-close" style="width:60px;"/>
+	    			
+	    		<p:outputLabel value="#{msg.principal}" for="principal"/>
+	    		<p:selectBooleanButton id="principal" onLabel="#{msg.si}" offLabel="#{msg.no}" value="#{parametroController.parametro.principal}"
+	    			onIcon="ui-icon-check" offIcon="ui-icon-close" style="width:60px;"/>
+	    			
+	    		<p:outputLabel value="#{msg.calculaPromedios}" for="calculaPromedios"/>
+	    		<p:selectBooleanButton id="calculaPromedios" onLabel="#{msg.si}" offLabel="#{msg.no}" value="#{parametroController.parametro.calculaPromedios}"
+	    			onIcon="ui-icon-check" offIcon="ui-icon-close" style="width:60px;"/>
+	    			
+	    	</p:panelGrid>
+	    	<br/>
+	    	<p:commandButton value="#{msg.eliminar}" action="#{parametroController.creaParametro}" rendered="#{not empty parametroController.parametro.id}"></p:commandButton>
+	    	<p:commandButton value="#{msg.guardar}" action="#{parametroController.guardaParametro}" process="@form" update="@all"/>
+	   </h:form>
+    	
+    </ui:define>
+
+</ui:composition>

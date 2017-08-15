@@ -1,134 +1,153 @@
 package com.sertec.controllers;
 
 import java.io.FileInputStream;
-import java.util.Iterator;
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
-import javax.faces.application.FacesMessage;
+import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
-import javax.faces.context.FacesContext;
 import javax.inject.Named;
-import javax.xml.crypto.dsig.spec.XSLTTransformParameterSpec;
 
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.poifs.filesystem.POIFSFileSystem;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.log4j.Logger;
+import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.UploadedFile;
-import org.springframework.web.context.annotation.SessionScope;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 
-import com.sertec.domain.DatoHorario;
+import com.megasoftworks.gl.poi.XlsxManager;
+import com.megasoftworks.jsfUtil.MessageUtils;
+import com.megasoftworks.jsfUtil.enums.SeverityMessageEnum;
+import com.sertec.beans.PreprocesoArchivoBean;
+import com.sertec.domain.Catalogo;
+import com.sertec.domain.Configuracion;
+import com.sertec.domain.Parametro;
+import com.sertec.domain.Usuario;
+import com.sertec.enums.CatalogoEnum;
+import com.sertec.enums.TipoDatoEnum;
+import com.sertec.exceptions.CargaArchivoException;
+import com.sertec.exceptions.NoCatalogosException;
+import com.sertec.lb.CatalogoServicio;
+import com.sertec.lb.ConfiguracionLB;
+import com.sertec.lb.ProcesaArchivoServicio;
+import com.sertec.lb.UsuarioServicio;
 
 /**
  *
  * @author pablo
  */
-@SessionScope
 @ManagedBean
-@Named("suberArchivoController")
-public class SubeArchivoController {
-    
-	private UploadedFile file;
-	private List <DatoHorario> datos;
+@Named("subeArchivoController")
+@Scope("session")
+public class SubeArchivoController implements Serializable {
 	
-	public String upload() {
+	private static final Logger LOGGER = Logger.getLogger(SubeArchivoController.class);
+	
+	private Configuracion formatoFechaConfig;
+    
+	private static final long serialVersionUID = 8553359155788230925L;
+	
+	private UploadedFile file;
+	private PreprocesoArchivoBean preprocesoArchivoBean;
+	//private String cadenaMensajePreproceso = "";
+	private boolean presentaSubeArchivo = true;
+	private boolean presentaTablaDatos = false;
+	private List<Parametro> parametrosACargar;
+	private List<Parametro> parametrosNoBdd;
+	
+	
+	@Autowired
+	ConfiguracionLB configuracionLB;
+	
+	@Autowired
+	ProcesaArchivoServicio procesaArchivoServicio;
+	
+	@Autowired
+	CatalogoServicio catalogoServicio;
+	
+	@Autowired
+	EstacionController estacionController;
+	@Autowired
+	LoginController loginController;
+	@Autowired
+	UsuarioServicio usuarioServicio;
+	
+	
+	@PostConstruct
+	public void init() {
+		formatoFechaConfig = configuracionLB.getConfiguracionPorItem("FORMATO_FECHA");
+	}
+	
+	public void reiniciaForm() {
+		file = null;
+		presentaSubeArchivo = true;
+		presentaTablaDatos = false;
+		procesaArchivoServicio.reiniciaBean();
+		preprocesoArchivoBean = new PreprocesoArchivoBean();
+		parametrosACargar = new ArrayList<>();
+		parametrosNoBdd = new ArrayList<>();
+	}
+
+	/**
+	 * Funcion que sube el archivo y lo procesa
+	 * @param event el evento de subida del archivo propio de primefaces
+	 */
+	public void handleFileUpload(FileUploadEvent event) {
+		file = event.getFile();
+		
 		try {
 			if(file != null) {
-	            FacesMessage message = new FacesMessage("Succesful", file.getFileName() + " is uploaded.");
-	            FacesContext.getCurrentInstance().addMessage(null, message);
+	            String contenido = XlsxManager.readXlsxFile((FileInputStream)file.getInputstream(), ";");
+	            if(procesaArchivoServicio == null) {
+	            	System.out.println("es nulo");
+	            }
+	            preprocesoArchivoBean = procesaArchivoServicio.procesaArchivo(contenido, formatoFechaConfig.getValor());
 	            
-	            //readFile((FileInputStream) file.getInputstream());
-	            readXlsxFile((FileInputStream) file.getInputstream());
+	            if(!preprocesoArchivoBean.getParametroscargar().isEmpty()) {
+	            	parametrosACargar = preprocesoArchivoBean.getParametroscargar();
+	            	//cadenaMensajePreproceso = "Parametros encontrados: " + StringUtils.join(preprocesoArchivoBean.getParametroscargar(), ", "); 
+	            } else {
+	            	parametrosACargar = new ArrayList<>();
+	            }
+	            if(!preprocesoArchivoBean.getParametrosNoBdd().isEmpty()) {
+	            	parametrosNoBdd = preprocesoArchivoBean.getParametrosNoBdd();
+	            	//cadenaMensajePreproceso = cadenaMensajePreproceso + "<br/> Parametros no encontrados en la base de datos" + StringUtils.join(preprocesoArchivoBean.getParametrosNoBdd(), ", ");
+	            } else {
+	            	parametrosNoBdd = new ArrayList<>();
+	            }
+	            
+	            presentaSubeArchivo = false;
+	            presentaTablaDatos = true;
 	        } else {
-	        	System.out.println("Problema con le archivo");
+	        	LOGGER.error("Problema con le archivo no se ha cargado");
 			}
+		} catch (CargaArchivoException e) {
+			LOGGER.error(e.getMessage());
+			MessageUtils.showMessage(SeverityMessageEnum.ERROR, "Error al subir el archivo", e.getMessage());
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
+			LOGGER.error(e.getMessage());
+			MessageUtils.showMessage(SeverityMessageEnum.ERROR, "Error al subir el archivo", "Revisar el log del sistema");
+			e.printStackTrace();
 		}
-        
-        return "";
     }
 	
-	private void readXlsxFile(FileInputStream fis) {
+	/**
+	 * Funcion que procesa los datos y los sube a la base de datos y reinicia el formulario.
+	 */
+	public void procesaDatos() {
 		try {
-			XSSFWorkbook myWorkBook = new XSSFWorkbook(fis);
-			XSSFSheet mySheet = myWorkBook.getSheetAt(0);
-			// Get iterator to all the rows in current sheet
-			Iterator<Row> rowIterator = mySheet.iterator();
-			// Traversing over each row of XLSX file
-			while (rowIterator.hasNext()) {
-				Row row = rowIterator.next();
-				// For each row, iterate through each columns
-				Iterator<Cell> cellIterator = row.cellIterator();
-				while (cellIterator.hasNext()) {
-					Cell cell = cellIterator.next();
-					switch (cell.getCellType()) {
-						case Cell.CELL_TYPE_STRING:
-							System.out.print(cell.getStringCellValue() + "\t");
-							break;
-						case Cell.CELL_TYPE_NUMERIC:
-							System.out.print(cell.getNumericCellValue() + "\t");
-							break;
-						case Cell.CELL_TYPE_BOOLEAN:
-							System.out.print(cell.getBooleanCellValue() + "\t");
-							break;
-						default : 
-					}
-				}
-				System.out.println(""); 
-			}
-			myWorkBook.close();
-
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-		}
-		
+			Usuario usuario = loginController.getUsuario();
+			Catalogo tipoDato = catalogoServicio.getByTipoAndAcronimo(TipoDatoEnum.UNA_HORA.toString(), CatalogoEnum.TIPO_DATO);
+			
+			procesaArchivoServicio.persisteDatos(preprocesoArchivoBean, file.getFileName(),
+					estacionController.getEstacionSeleccionada(), usuario, tipoDato);
+			reiniciaForm();
+		} catch (NoCatalogosException e) {
+			LOGGER.error(e.getMessage());
+		} 
 		
 	}
-
-	private void readFile(FileInputStream file) {
-		try {
-		    POIFSFileSystem fs = new POIFSFileSystem(file);
-		    HSSFWorkbook wb = new HSSFWorkbook(fs);
-		    HSSFSheet sheet = wb.getSheetAt(0);
-		    HSSFRow row;
-		    HSSFCell cell;
-
-		    int rows; // No of rows
-		    rows = sheet.getPhysicalNumberOfRows();
-
-		    int cols = 0; // No of columns
-		    //int tmp = 0;
-
-		    // This trick ensures that we get the data properly even if it doesn't start from first few rows
-		    //for(int i = 0; i < rows; i++) {
-		    //    row = sheet.getRow(i);
-		    //    if(row != null) {
-		    //        tmp = sheet.getRow(i).getPhysicalNumberOfCells();
-//		            if(tmp > cols) cols = tmp;
-//		        }
-//		    }
-
-		    for(int r = 0; r < rows; r++) {
-		        row = sheet.getRow(r);
-		        if(row != null) {
-		            for(int c = 0; c < cols; c++) {
-		                cell = row.getCell((short)c);
-		                if(cell != null) {
-		                                  System.out.println("contenido " + cell.getStringCellValue());
-		                }
-		            }
-		        }
-		    }
-		} catch(Exception ioe) {
-		    ioe.printStackTrace();
-		}
-	}
+	
 	public UploadedFile getFile() {
 		return file;
 	}
@@ -137,13 +156,43 @@ public class SubeArchivoController {
 		this.file = file;
 	}
 
-	public List<DatoHorario> getDatos() {
-		return datos;
+	public PreprocesoArchivoBean getPreprocesoArchivoBean() {
+		return preprocesoArchivoBean;
 	}
 
-	public void setDatos(List<DatoHorario> datos) {
-		this.datos = datos;
+	public void setPreprocesoArchivoBean(PreprocesoArchivoBean preprocesoArchivoBean) {
+		this.preprocesoArchivoBean = preprocesoArchivoBean;
 	}
-	
-	
+
+	public boolean isPresentaSubeArchivo() {
+		return presentaSubeArchivo;
+	}
+
+	public void setPresentaSubeArchivo(boolean presentaSubeArchivo) {
+		this.presentaSubeArchivo = presentaSubeArchivo;
+	}
+
+	public boolean isPresentaTablaDatos() {
+		return presentaTablaDatos;
+	}
+
+	public void setPresentaTablaDatos(boolean presentaTablaDatos) {
+		this.presentaTablaDatos = presentaTablaDatos;
+	}
+
+	public List<Parametro> getParametrosACargar() {
+		return parametrosACargar;
+	}
+
+	public void setParametrosACargar(List<Parametro> parametrosACargar) {
+		this.parametrosACargar = parametrosACargar;
+	}
+
+	public List<Parametro> getParametrosNoBdd() {
+		return parametrosNoBdd;
+	}
+
+	public void setParametrosNoBdd(List<Parametro> parametrosNoBdd) {
+		this.parametrosNoBdd = parametrosNoBdd;
+	}	
 }

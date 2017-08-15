@@ -19,6 +19,14 @@
     </render-kit>
     
     <application>
+    	<el-resolver>org.springframework.web.jsf.el.SpringBeanFacesELResolver</el-resolver>
+
+		<!-- Se requiere para atender el incidente JAVASERVERFACES_SPEC_PUBLIC-1060 -->
+		<action-listener>org.omnifaces.eventlistener.ResetInputAjaxActionListener</action-listener>
+
+		<locale-config>
+			<default-locale>es</default-locale>
+		</locale-config>
 	  <resource-bundle>
 		<base-name>mensajes</base-name>
 		<var>msg</var>

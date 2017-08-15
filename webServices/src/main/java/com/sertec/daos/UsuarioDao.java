@@ -7,9 +7,14 @@ import javax.persistence.PersistenceContext;
 
 
 import com.sertec.domain.Usuario;
+import com.sertec.exceptions.NoUsuarioEncontradoException;
 
 import org.apache.log4j.Logger;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
+@Repository
+@Transactional
 public class UsuarioDao extends AbstractFacade<UsuarioDao> {
 
 	@PersistenceContext(unitName = "ruidoPU")
@@ -18,12 +23,15 @@ public class UsuarioDao extends AbstractFacade<UsuarioDao> {
 	private static final Logger LOGGER = Logger.getLogger(UsuarioDao.class);
 	
 	
-	public Usuario findByUserName(String username) {
+	public Usuario findByUserName(String username) throws NoUsuarioEncontradoException {
 		LOGGER.debug("Buscando usuarios con userName: " + username);
 		List<Usuario> usuarios = em.createNamedQuery("Usuario.findByUsername", Usuario.class)
 			.setParameter("userName", username)
 			.getResultList();
-		return usuarios.isEmpty() ? null : usuarios.get(0);
+		if(usuarios.isEmpty()) {
+			throw new NoUsuarioEncontradoException("No se encontro el usuari con username: " + username);
+		}
+		return usuarios.get(0);
 	}
 	
 	public UsuarioDao() {

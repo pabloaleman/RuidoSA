@@ -21,7 +21,8 @@ import javax.validation.constraints.Size;
 @Table(name = "estacion")
 @NamedQueries({
     @NamedQuery(name = "Estacion.findEstacionesActivas", query = "SELECT e FROM Estacion e WHERE e.estado = 'Activa'"),
-    @NamedQuery(name = "Estacion.findEstacionByAcronimo", query = "SELECT e FROM Estacion e WHERE e.acronimo = :acronimo and e.estado = 'Activa'")})
+    @NamedQuery(name = "Estacion.findEstacionByAcronimo", query = "SELECT e FROM Estacion e WHERE e.acronimo = :acronimo and e.estado = 'Activa'"),
+    @NamedQuery(name = "Estacion.getById", query = "SELECT e FROM Estacion e WHERE e.id = :id and e.estado = 'Activa'")})
 public class Estacion implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Id
@@ -53,6 +54,24 @@ public class Estacion implements Serializable {
     private Collection<ArchivoBinario> archivosBinarios;
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "estacion")
     private Collection<ArchivoDatos> archivosDatos;
+	
+	@Override
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof Estacion)) {
+            return false;
+        }
+        Estacion other = (Estacion) object;
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+            return false;
+        }
+        if(this.id == other.id) {
+        	return true;
+        }
+        return true;
+    }
+	
+	
 	public Long getId() {
 		return id;
 	}

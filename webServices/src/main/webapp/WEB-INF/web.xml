@@ -19,14 +19,31 @@
 		<servlet-name>mvc-dispatcher</servlet-name>
 		<url-pattern>/</url-pattern>
 	</servlet-mapping>
+	
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
 
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
-		<param-value>/WEB-INF/mvc-dispatcher-servlet.xml,
-					/WEB-INF/applicationContext.xml,
-					/WEB-INF/spring-security.xml
+		<param-value>
+			/WEB-INF/applicationContext.xml,
+			/WEB-INF/spring-security.xml
 		</param-value>
 	</context-param>
+	
+	<!-- El sring security -->
+	<filter>
+		<filter-name>springSecurityFilterChain</filter-name>
+  		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>springSecurityFilterChain</filter-name>
+		<url-pattern>/*</url-pattern>
+		<dispatcher>FORWARD</dispatcher>
+        <dispatcher>REQUEST</dispatcher>
+	</filter-mapping>
+	<!-- Termina el spring security -->
 	
 	<context-param>
 		<param-name>javax.faces.STATE_SAVING_METHOD</param-name>
@@ -59,9 +76,8 @@
 	</listener> -->
 
 	<listener>
-		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	    <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
 	</listener>
-	
 	<filter>
 		<filter-name>Character Encoding Filter</filter-name>
 		<filter-class>org.primefaces.ultima.filter.CharacterEncodingFilter</filter-class>
@@ -73,6 +89,7 @@
 	  	org.primefaces.webapp.filter.FileUploadFilter
 	 </filter-class>
 	</filter>
+	
 	<filter-mapping>
 	 <filter-name>PrimeFaces FileUpload Filter</filter-name>
 	 <servlet-name>Faces Servlet</servlet-name>
@@ -94,6 +111,12 @@
 		<servlet-name>Faces Servlet</servlet-name>
 		<url-pattern>*.xhtml</url-pattern>
 	</servlet-mapping>
+	
+	<context-param>
+	    <param-name>facelets.SKIP_COMMENTS</param-name>
+	    <param-value>true</param-value>
+	</context-param>
+	
 	
 	
 	<mime-mapping>

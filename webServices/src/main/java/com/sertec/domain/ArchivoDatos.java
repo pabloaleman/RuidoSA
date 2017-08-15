@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.Date;
 
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -43,7 +42,7 @@ public class ArchivoDatos implements Serializable {
 	@NotNull
 	@Column(name = "fecha_carga")
 	@Temporal(TemporalType.TIMESTAMP)
-	private Date fechaSubida;
+	private Date fechaSubida = new Date();
 	
 	@Basic(optional = false)
 	@NotNull
@@ -51,22 +50,20 @@ public class ArchivoDatos implements Serializable {
 	@Column(name = "estado")
 	private String estado = "Cargado";
 
-	@JoinColumn(name = "estacion", referencedColumnName = "id", insertable = false, updatable = false)
+	@JoinColumn(name = "estacion")
     @ManyToOne(optional = false)
 	private Estacion estacion;
 	
-	@JoinColumn(name = "usuario", referencedColumnName = "id", insertable = false, updatable = false)
+	@JoinColumn(name = "usuario")
     @ManyToOne(optional = false)
-	private Estacion usuario;
+	private Usuario usuario;
 	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "archivoDatos")
-    private Collection<DatoHorario> datosHorarios;
+	@JoinColumn(name = "plataforma")
+    @ManyToOne(optional = false)
+	private Catalogo plataforma;
 	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "archivoDatos")
-    private Collection<Promedio> promedios;
-	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "archivoDatos")
-    private Collection<MaximoMinimo> maxMins;
+	@OneToMany(mappedBy = "archivoDatos")
+    private Collection<Dato> datos;
 
 	public Long getId() {
 		return id;
@@ -108,37 +105,29 @@ public class ArchivoDatos implements Serializable {
 		this.estacion = estacion;
 	}
 
-	public Estacion getUsuario() {
+	public Usuario getUsuario() {
 		return usuario;
 	}
 
-	public void setUsuario(Estacion usuario) {
+	public void setUsuario(Usuario usuario) {
 		this.usuario = usuario;
 	}
 
-	public Collection<DatoHorario> getDatosHorarios() {
-		return datosHorarios;
+	public Catalogo getPlataforma() {
+		return plataforma;
 	}
 
-	public void setDatosHorarios(Collection<DatoHorario> datosHorarios) {
-		this.datosHorarios = datosHorarios;
+	public void setPlataforma(Catalogo plataforma) {
+		this.plataforma = plataforma;
 	}
 
-	public Collection<Promedio> getPromedios() {
-		return promedios;
+	public Collection<Dato> getDatos() {
+		return datos;
 	}
 
-	public void setPromedios(Collection<Promedio> promedios) {
-		this.promedios = promedios;
+	public void setDatos(Collection<Dato> datos) {
+		this.datos = datos;
 	}
-
-	public Collection<MaximoMinimo> getMaxMins() {
-		return maxMins;
-	}
-
-	public void setMaxMins(Collection<MaximoMinimo> maxMins) {
-		this.maxMins = maxMins;
-	}
-
+	
 	
 }
