@@ -11,6 +11,7 @@
 	<http auto-config="true" use-expressions="true">
 		<intercept-url pattern="/secured/admin/**" access="hasRole('ROLE_ADMIN')" />
 		<intercept-url pattern="/secured/carga/**" access="hasRole('ROLE_CARGA')" />
+		<intercept-url pattern="/secured/calculaPromedios/**" access="hasRole('ROLE_CARGA')" />
 
 		<!-- access denied page -->
 		<access-denied-handler error-page="/error.xhtml" />

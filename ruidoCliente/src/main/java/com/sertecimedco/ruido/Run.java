@@ -1,7 +1,5 @@
 package com.sertecimedco.ruido;
 
-import java.io.File;
-
 import org.apache.log4j.Logger;
 
 import com.megasoftworks.gl.util.PropertiesReader;
@@ -11,7 +9,8 @@ public class Run {
 	
 	static Logger logger = Logger.getLogger(Run.class);
 	
-	private PropertiesReload properties = new PropertiesReload();
+	private static PropertiesReload properties = new PropertiesReload();
+	public static String FRECUENCIA;
 	public static String SERVER_IP;
 	public static String SERVER_PORT;
 	public static String SERVER_SERVICIO;
@@ -20,9 +19,9 @@ public class Run {
 	public static String ESTACION;
 	public static String pathPorProcesar;
 	public static String pathProcesados;
-	public String[] listadoArchivos;
 	
-	public Run() {
+	
+	public static void cargaParametros() {
 		properties = PropertiesReader.propertiesReader("configuracion.properties");
 		SERVER_IP = properties.getProperty("SERVER_IP");
 		logger.info("SERVER_IP: " + SERVER_IP);
@@ -36,18 +35,7 @@ public class Run {
 		SERVICIO_HAY_ARCHIVO = properties.getProperty("SERVICIO_HAY_ARCHIVO");
 		SERVICIO_SUBE_ARCHIVO = properties.getProperty("SERVICIO_SUBE_ARCHIVO");
 		ESTACION = properties.getProperty("ESTACION");
+		FRECUENCIA = properties.getProperty("FRECUENCIA");
+		logger.info("FRECUENCIA: " + FRECUENCIA);
 	}
-	
-	public boolean obtieneListadoArchivos() {
-		boolean ok = true;
-		File ficheroPorProcesar = new File(pathPorProcesar);
-		if (ficheroPorProcesar.exists() && ficheroPorProcesar.isDirectory()) {
-			listadoArchivos = ficheroPorProcesar.list();
-		} else {
-			logger.fatal("Error al buscar la carpeta de origen de los archivos");
-			ok = false;
-		}
-		return ok;
-	}
-
 }

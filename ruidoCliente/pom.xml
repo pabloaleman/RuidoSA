@@ -4,6 +4,7 @@
 	<artifactId>ruidoCliente</artifactId>
 	<packaging>jar</packaging>
 	<name>ruidoCliente</name>
+	
 	<parent>
         <groupId>com.sertecimedco.ruidoSA</groupId>
         <artifactId>ruidoPlatform</artifactId>
@@ -31,7 +32,7 @@
 		</dependency>
 
 		<dependency>
-			<groupId>com.sertecimedco.ruido</groupId>
+			<groupId>com.sertecimedco.ruidoSA</groupId>
 			<artifactId>clasesComunes</artifactId>
 			<version>${project.version}</version>
 		</dependency>	
@@ -58,6 +59,30 @@
 			<artifactId>spring-web</artifactId>
 			<version>${spring.version}</version>
 		</dependency>
+		
+		<dependency>
+	      <groupId>org.quartz-scheduler</groupId>
+	      <artifactId>quartz</artifactId>
+	      <version>2.2.1</version>
+	  </dependency>
+	  <dependency>
+	      <groupId>org.quartz-scheduler</groupId>
+	      <artifactId>quartz-jobs</artifactId>
+	      <version>2.2.1</version>
+	  </dependency>  
+	  
+	  <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>1.7.21</version> <!-- or use LATEST -->
+    </dependency>
+    <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-simple</artifactId>
+        <version>1.7.21</version> <!-- or use LATEST -->
+    </dependency>
+
+	  
 		
 	</dependencies>
 	<build>
@@ -86,6 +111,21 @@
 					</execution>
 				</executions>
 			</plugin>
+			
+			<plugin>
+		        <groupId>org.apache.maven.plugins</groupId>
+		        <artifactId>maven-jar-plugin</artifactId>
+		        <configuration>
+		          <archive>
+<!-- 		            <manifestFile>src/main/resources/META-INF/MANIFEST.MF</manifestFile> -->
+						<manifest>
+			                <addClasspath>true</addClasspath>
+			                <classpathPrefix>lib/</classpathPrefix>
+			                <mainClass>com.sertecimedco.ruido.MainQuartz</mainClass>
+			            </manifest>
+		          </archive>
+		        </configuration>
+		      </plugin>
 
 		</plugins>
 		<resources>

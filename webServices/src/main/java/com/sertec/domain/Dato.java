@@ -23,7 +23,9 @@ import javax.validation.constraints.NotNull;
 @Table(name = "dato")
 @NamedQueries({
 	@NamedQuery(name = "Dato.findDatos", query = "SELECT d FROM Dato d where d.estado = 'Activo' and d.parametro = :parametro and d.tipoDato = :tipoDato and d.fecha between :fInicio and :fFin"),
-	@NamedQuery(name = "Dato.findDatosParaPromedio", query = "SELECT d FROM Dato d where d.estado = 'Activo' and d.parametro = :parametro and d.tipoDato = :tipoDato and d.hora in :horas and d.fecha between :fInicio and :fFin"),
+	@NamedQuery(name = "Dato.findDatosParaPromedio", query = "SELECT d FROM Dato d where d.estado = 'Activo' and d.estacion = :estacion and d.parametro = :parametro and d.tipoDato = :tipoDato and d.hora in :horas and d.fecha between :fInicio and :fFin"),
+	@NamedQuery(name = "Dato.getDatosByEstacionesAndParametrosAndFechas", query = "SELECT d FROM Dato d where d.estado = 'Activo' and d.estacion in :estaciones and d.parametro in :parametros and d.fecha between :fInicio and :fFin order by d.estacion, d.parametro, d.fecha"),
+	@NamedQuery(name = "Dato.getDatosByEstacionAndParametroAndFechas", query = "SELECT d FROM Dato d where d.estado = 'Activo' and d.estacion = :estacion and d.parametro = :parametro and d.fecha between :fInicio and :fFin order by d.fecha"),
     @NamedQuery(name = "Dato.findDato", query = "SELECT d FROM Dato d where d.estado = 'Activo' and d.parametro = :parametro and d.tipoDato = :tipoDato and d.fechaD = :fechaD")})
 
 public class Dato implements Serializable {
@@ -41,6 +43,12 @@ public class Dato implements Serializable {
 	@Column(name = "fecha")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date fecha;
+	
+	@Basic(optional = false)
+	@NotNull
+	@Column(name = "fecha_carga")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date fechaCarga;
 	
 	@Basic(optional = false)
 	@NotNull
@@ -167,6 +175,15 @@ public class Dato implements Serializable {
 	public void setFechaD(Long fechaD) {
 		this.fechaD = fechaD;
 	}
+
+	public Date getFechaCarga() {
+		return fechaCarga;
+	}
+
+	public void setFechaCarga(Date fechaCarga) {
+		this.fechaCarga = fechaCarga;
+	}
+	
 	
 
 }

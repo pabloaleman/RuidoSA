@@ -4,6 +4,7 @@
 	<artifactId>WebServicesServer</artifactId>
 	<packaging>war</packaging>
 	<name>WebServicesServer</name>
+	
 	<parent>
         <groupId>com.sertecimedco.ruidoSA</groupId>
         <artifactId>ruidoPlatform</artifactId>
@@ -335,7 +336,7 @@
 		</dependency>
 		
 		<dependency>
-			<groupId>com.sertecimedco.ruido</groupId>
+			<groupId>com.sertecimedco.ruidoSA</groupId>
 			<artifactId>clasesComunes</artifactId>
 			<version>${project.version}</version>
 		</dependency>
@@ -374,6 +375,7 @@
                 <directory>src/main/resources/</directory>
                 <includes>
                     <include>**/*.properties</include>
+                    <include>**/*.xml</include>
                 </includes>
                 <filtering>true</filtering>
             </resource>

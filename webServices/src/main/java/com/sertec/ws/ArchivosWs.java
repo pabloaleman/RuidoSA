@@ -18,6 +18,7 @@ import com.sertec.domain.Configuracion;
 import com.sertec.lb.ArchivoBinarioLB;
 import com.sertec.lb.ConfiguracionLB;
 import com.sertecimedco.ruido.clasesComunes.HayArchivoResponse;
+import com.sertecimedco.ruido.clasesComunes.HistoricoArchivosResponse;
 import com.sertecimedco.ruido.clasesComunes.SubeArchivoRequest;
 import com.sertecimedco.ruido.clasesComunes.SubeArchivoResponse;
 
@@ -37,6 +38,7 @@ public class ArchivosWs {
 	@RequestMapping(value = "hayArchivo/{nombreArchivo}/{estacion}", method = RequestMethod.POST)
 	public @ResponseBody HayArchivoResponse hayArchivo(@PathVariable("nombreArchivo") String nombreArchivo,
 			@PathVariable("estacion") String estacion) {
+		LOGGER.info("Llama a hayArchivo, estacion: " + estacion + " nombreArchivo: " + nombreArchivo);
 
 		LOGGER.debug("WS HA Nombre recibido: " + nombreArchivo);
 		LOGGER.debug("WS HA Nombre estacion: " + estacion);
@@ -53,11 +55,22 @@ public class ArchivosWs {
 		return retorno;
 
 	}
+	
+	@RequestMapping(value = "historicos/{estacion}", method = RequestMethod.POST)
+	public @ResponseBody HistoricoArchivosResponse historicos(@PathVariable("estacion") String estacion) {
+		LOGGER.info("Llama a historicos, estacion: " + estacion);
+		HistoricoArchivosResponse retorno = new HistoricoArchivosResponse();
+		retorno.setArchivosExistentes(archivoBinarioLB.retornoHistoricos(estacion));
+		return retorno;
+
+	}
 
 	@RequestMapping(value = "subeArchivo", method = RequestMethod.POST)
 	public @ResponseBody SubeArchivoResponse subeArchivo( @RequestBody SubeArchivoRequest archivoRequest) {
-
+		
+		LOGGER.info("Llama a subeArchivo, datos: " + archivoRequest.toString());
 		LOGGER.debug("WS SA Nombre recibido: " + archivoRequest.getNombreArchivo());
+		LOGGER.debug("WS SA Fecha: " + archivoRequest.getNombreFecha());
 		LOGGER.debug("WS SA Md5: " + archivoRequest.getMd5());
 		LOGGER.debug("WS SA Nombre estacion: " + archivoRequest.getEstacion());
 
@@ -68,10 +81,12 @@ public class ArchivosWs {
 //				archivoRequest.getEstacion())) {
 
 		Configuracion configPath = configuracionLB.getConfiguracionPorItem("PATH_LOCAL");
-			String path = configPath.getValor() + File.separator + archivoRequest.getEstacion();
+			String path = configPath.getValor() + File.separator
+					+ archivoRequest.getEstacion() + File.separator
+					+ archivoRequest.getNombreFecha();
 			try {
 				if(!(new File(path).exists())) {
-					LOGGER.warn("Se va a crear el directorio: " + path);
+					LOGGER.debug("Se va a crear el directorio: " + path);
 					new File(path).mkdirs();
 					
 				}

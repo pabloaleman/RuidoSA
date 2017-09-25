@@ -42,5 +42,12 @@ public class ArchivoBinarioDao {
 			return false;
 		}
 	}
+	
+	public List<ArchivoBinario> getArchivos(Estacion estacion) {
+		return em.createNamedQuery("ArchivoBinario.findByEstacion", ArchivoBinario.class)
+				.setParameter("estacion", estacion)
+				.getResultList();
+		
+	}
 
 }

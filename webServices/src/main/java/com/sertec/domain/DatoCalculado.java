@@ -11,6 +11,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -19,6 +21,11 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "dato_calculado")
+@NamedQueries({
+	@NamedQuery(name="DatoCalculado.getDatoByEstacionDAndTipoDatoAndFechas", query="SELECT d from DatoCalculado d where d.estado = 'Activo' and d.estacion = :estacion and d.tipoDato = :tipoDato and d.fechaD between :fechaI and :fechaF"),
+	@NamedQuery(name="DatoCalculado.getDatosByEstacionesAndParametrosAndFechas", query = "SELECT d FROM DatoCalculado d where d.estado = 'Activo' and d.estacion in :estaciones and d.parametro in :parametros and d.fecha between :fInicio and :fFin order by d.estacion, d.parametro, d.fecha"),
+	@NamedQuery(name="DatoCalculado.getDatosByEstacionesAndParametrosAndTiposDatoAndFechas", query = "SELECT d FROM DatoCalculado d where d.estado = 'Activo' and d.tipoDato in :tiposDato and d.estacion in :estaciones and d.parametro in :parametros and d.fecha between :fInicio and :fFin order by d.estacion, d.parametro, d.fecha")
+})
 public class DatoCalculado  implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Id
@@ -48,7 +55,7 @@ public class DatoCalculado  implements Serializable {
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "maximo")
-	private Double maximo;
+	private Double maximo = Double.MIN_VALUE;
 	
 	@Basic(optional = false)
 	@NotNull
@@ -59,7 +66,7 @@ public class DatoCalculado  implements Serializable {
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "minimo")
-	private Double minimo;
+	private Double minimo = Double.MAX_VALUE;
 	
 	@Basic(optional = false)
 	@NotNull
@@ -69,6 +76,12 @@ public class DatoCalculado  implements Serializable {
 	
 	@Column(name = "estado")
 	private String estado = "Activo";
+	
+	@Basic(optional = false)
+	@NotNull
+	@Column(name = "fecha_calculo")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date fechaCalculo;
 	
 	@JoinColumn(name = "archivoDatos", referencedColumnName = "id")
     @ManyToOne(optional = false)
@@ -201,5 +214,14 @@ public class DatoCalculado  implements Serializable {
 	public void setTipoDato(Catalogo tipoDato) {
 		this.tipoDato = tipoDato;
 	}
+
+	public Date getFechaCalculo() {
+		return fechaCalculo;
+	}
+
+	public void setFechaCalculo(Date fechaCalculo) {
+		this.fechaCalculo = fechaCalculo;
+	}
+	
 
 }

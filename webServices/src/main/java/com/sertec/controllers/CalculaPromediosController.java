@@ -14,8 +14,9 @@ import org.springframework.context.annotation.Scope;
 import com.megasoftworks.jsfUtil.MessageUtils;
 import com.megasoftworks.jsfUtil.Redireccion;
 import com.megasoftworks.jsfUtil.enums.SeverityMessageEnum;
-import com.sertec.beans.CalculaPromediosBean;
+import com.sertec.beans.CalculaPromediosMensajesListBean;
 import com.sertec.domain.Parametro;
+import com.sertec.enums.CalculaPromedioErrorEnum;
 import com.sertec.exceptions.CalculaPromediosException;
 import com.sertec.exceptions.ParametrosException;
 import com.sertec.lb.CalculaPromediosService;
@@ -34,6 +35,8 @@ public class CalculaPromediosController implements Serializable {
 	ParametroServicio parametroServicio;
 	@Autowired
 	ParametroController parametroController;
+	@Autowired
+	LoginController loginController;
 
 	private static final long serialVersionUID = -5257723025080571069L;
 	private Date fechaInicio;
@@ -54,21 +57,23 @@ public class CalculaPromediosController implements Serializable {
 	
 	public void calculaPromedios() {
 		try {
-			CalculaPromediosBean calculaPromediosBean = calculaPromediosService.calculaPromedios(fechaInicio, fechaFin, estacionController.getEstacionSeleccionada(), parametrosCP);
-			if(!calculaPromediosBean.getMensajesError().isEmpty()) {
-				MessageUtils.showMessages(calculaPromediosBean.getMensajesError(), SeverityMessageEnum.ERROR);
+			CalculaPromediosMensajesListBean listMessages = calculaPromediosService.calculaPromedios(fechaInicio, fechaFin, estacionController.getEstacionSeleccionada(), parametrosCP, loginController.getUsuario());
+			if(!listMessages.getMensajesError().isEmpty()) {
+				MessageUtils.showMessages(listMessages.getMensajesError(), SeverityMessageEnum.ERROR);
 			}
 			
-			if(!calculaPromediosBean.getMensajesWarning().isEmpty()) {
-				MessageUtils.showMessages(calculaPromediosBean.getMensajesWarning(), SeverityMessageEnum.WARN);
+			if(!listMessages.getMensajesWarning().isEmpty()) {
+				MessageUtils.showMessages(listMessages.getMensajesWarning(), SeverityMessageEnum.WARN);
 			}
 			
-			if(!calculaPromediosBean.getMensajesInformacion().isEmpty()) {
-				MessageUtils.showMessages(calculaPromediosBean.getMensajesInformacion(), SeverityMessageEnum.INFO);
+			if(!listMessages.getMensajesInformacion().isEmpty()) {
+				MessageUtils.showMessages(listMessages.getMensajesInformacion(), SeverityMessageEnum.INFO);
 			}
 		} catch (CalculaPromediosException e) {
-			String mensaje = ResourceBundle.getBundle("errorMensajes").getString(e.getCodigoError());
-			MessageUtils.showMessage(SeverityMessageEnum.ERROR, "Error", mensaje);
+			if(e.getCodigoError() == CalculaPromedioErrorEnum.FECHA_INICIO_MAYOR_FECHA_FIN) {
+				String mensaje = ResourceBundle.getBundle("errorMensajes").getString("CalculaPromedios0001");
+				MessageUtils.showMessage(SeverityMessageEnum.ERROR, "Error", mensaje);
+			}
 		}
 	}
 

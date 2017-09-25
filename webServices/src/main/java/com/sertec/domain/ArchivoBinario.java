@@ -23,7 +23,8 @@ import javax.validation.constraints.Size;
 @Entity
 @Table(name = "archivo_binario")
 @NamedQueries({
-    @NamedQuery(name = "ArchivoBinario.findByNombreAndEstacion", query = "SELECT e FROM ArchivoBinario e WHERE e.nombre = :nombre and e.estacion = :estacion")})
+    @NamedQuery(name = "ArchivoBinario.findByNombreAndEstacion", query = "SELECT e FROM ArchivoBinario e WHERE e.nombre = :nombre and e.estacion = :estacion"),
+    @NamedQuery(name = "ArchivoBinario.findByEstacion", query = "SELECT e FROM ArchivoBinario e WHERE e.estacion = :estacion")})
 public class ArchivoBinario implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Id

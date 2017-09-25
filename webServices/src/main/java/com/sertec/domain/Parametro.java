@@ -24,6 +24,7 @@ import com.sertec.enums.AccionesEnum;
 @NamedQueries({
 	@NamedQuery(name = "Parametro.getByCanalAndMedidaAndPerfilAndNivel", query = "SELECT p FROM Parametro p where p.canal = :canal and p.medida = :medida and p.perfil = :perfil and p.nivel = :nivel"),
 	@NamedQuery(name = "Parametro.getParametros", query = "SELECT p FROM Parametro p"),
+	@NamedQuery(name = "Parametro.getParametroById", query = "SELECT p FROM Parametro p where p.id = :id"),
     @NamedQuery(name = "Parametro.getParametrosCalculaPromedios", query = "SELECT p FROM Parametro p where p.calculaPromedios = true")})
 public class Parametro implements Serializable {
 
@@ -191,6 +192,22 @@ public class Parametro implements Serializable {
 				+ nivelLocal;
 		acronimo = acronimoL.toUpperCase();
 	}
+	
+	@Override
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof Parametro)) {
+            return false;
+        }
+        Parametro other = (Parametro) object;
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+            return false;
+        }
+        if(this.id == other.id) {
+        	return true;
+        }
+        return true;
+    }
 	
 	
 	

@@ -39,4 +39,14 @@ public class CatalogoServicioImpl implements CatalogoServicio {
 		return catalogoDao.getByTipoAndAcronimo(acronimo, tipo);
 	}
 
+	@Override
+	public Catalogo getCatalogoPromedioHora() {
+		try {
+			return catalogoDao.getByTipoAndAcronimo("1h", CatalogoEnum.TIPO_DATO);
+		} catch (NoCatalogosException e) {
+			return null;
+		}
+		
+	}
+
 }

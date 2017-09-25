@@ -71,7 +71,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
-                <jdbc.url>jdbc:postgresql://localhost:5432/monitoreoGuayaquil</jdbc.url>
+                <jdbc.url>jjdbc:postgresql://localhost:5432/ruido</jdbc.url>
                 <jdbc.hibernate.dialect>org.hibernate.dialect.PostgreSQLDialect</jdbc.hibernate.dialect>
                 <jdbc.hibernate.db.creation>update</jdbc.hibernate.db.creation>
                 <jdbc.driver>org.postgresql.Driver</jdbc.driver>
@@ -93,12 +93,12 @@
         <profile>
             <id>prod</id>
             <properties>
-                <jdbc.url>jdbc:postgresql://localhost:5432/monitoreo</jdbc.url>
+                <jdbc.url>jdbc:postgresql://localhost:5432/ruido</jdbc.url>
                 <jdbc.hibernate.dialect>org.hibernate.dialect.PostgreSQLDialect</jdbc.hibernate.dialect>
                 <jdbc.hibernate.db.creation>update</jdbc.hibernate.db.creation>
                 <jdbc.driver>org.postgresql.Driver</jdbc.driver>
-                <jdbc.username>postgres</jdbc.username>
-                <jdbc.password>S3ert3ec*/*</jdbc.password>
+                <jdbc.username>ruido</jdbc.username>
+                <jdbc.password>Ru1d0SAmb13nt3</jdbc.password>
                 <log.level>INFO</log.level>
                 <hibernate.log.level>ERROR</hibernate.log.level>
                 <hibernate.c3po.log.level>ERROR</hibernate.c3po.log.level>

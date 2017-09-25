@@ -1,5 +1,9 @@
 package com.sertec.lb.impl;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import javax.annotation.PostConstruct;
 import javax.inject.Named;
 
@@ -53,6 +57,17 @@ public class ArchivoBinarioLBImpl implements ArchivoBinarioLB {
 			file.setEstacion(e);
 			return archivoBinarioDao.save(file);
 		}
+	}
+
+	@Override
+	public Map<String, String> retornoHistoricos(String estacion) {
+		Estacion e = estacionDao.findEstacionByAcronimo(estacion);
+		Map<String, String> retorno = new HashMap<>();
+		List<ArchivoBinario> archivos = archivoBinarioDao.getArchivos(e);
+		for(ArchivoBinario archivoBinario : archivos) {
+			retorno.put(archivoBinario.getNombre(), archivoBinario.getNombre());
+		}
+		return retorno;
 	}
 
 }

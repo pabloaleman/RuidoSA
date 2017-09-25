@@ -2,6 +2,7 @@ package com.sertecimedco.ruido.clasesComunes;
 
 public class SubeArchivoRequest {
 	private String nombreArchivo;
+	private String nombreFecha;
 	private String md5;
 	private String estacion;
 	private byte[] contenido;
@@ -10,6 +11,12 @@ public class SubeArchivoRequest {
 	}
 	public void setNombreArchivo(String nombreArchivo) {
 		this.nombreArchivo = nombreArchivo;
+	}
+	public String getNombreFecha() {
+		return nombreFecha;
+	}
+	public void setNombreFecha(String nombreFecha) {
+		this.nombreFecha = nombreFecha;
 	}
 	public String getMd5() {
 		return md5;
@@ -28,6 +35,14 @@ public class SubeArchivoRequest {
 	}
 	public void setContenido(byte[] contenido) {
 		this.contenido = contenido;
+	}
+	
+	@Override
+	public String toString() {
+		return "nombreArchivo: " + nombreArchivo
+				+ " nombreFecha: " + nombreFecha
+				+ " md5: " + md5
+				+ " estacion: " + estacion;
 	}
 	
 	

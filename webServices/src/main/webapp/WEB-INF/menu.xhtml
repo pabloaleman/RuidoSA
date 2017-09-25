@@ -44,6 +44,12 @@
                         <p:menuitem id="subeArchivo" value="#{msg.menuSubeArchivos}" icon="file_upload" outcome="/secured/carga/subirArchivo.xhtml"/>
                         <p:menuitem id="configuracion" value="#{msg.menuConfiguracion}" icon="settings" outcome="/secured/admin/configuracion.xhtml"/>
                         <p:menuitem id="calculaPromedios" value="#{msg.calculaPromedios}" icon="exposure" action="#{calculaPromediosController.goCalculaPromedios}" />
+
+                        <p:submenu id="reportes" label="#{msg.reportes}"  icon="grid_on">
+                        	<p:menuitem id="reportesDatos" value="#{msg.reportesHorarios}" icon="grid_on" outcome="/public/reports/reports.xhtml" />
+                        	<p:menuitem id="reportesPromedios" value="#{msg.reportesPromedios}" icon="grid_on" outcome="/public/reports/promedios.xhtml" />
+                        </p:submenu>
+                        <p:menuitem id="reportesGraficos" value="#{msg.reportesGraficos}" icon="timeline" outcome="/public/reports/grafico.xhtml" />
                         <p:submenu id="themes" label="Themes" icon="palette">
                             <p:menuitem id="theme1" value="Indigo - Pink" icon="brush" actionListener="#{guestPreferences.setTheme('indigo')}" ajax="false" />
                             <p:menuitem id="theme2" value="Brown - Green" icon="brush" actionListener="#{guestPreferences.setTheme('brown')}" ajax="false" />

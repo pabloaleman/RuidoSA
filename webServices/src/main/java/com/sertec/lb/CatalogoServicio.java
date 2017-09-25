@@ -11,4 +11,5 @@ public interface CatalogoServicio {
 	public void actualizaCatalogo(Catalogo catalogo);
 	public List<Catalogo> getByTipo(CatalogoEnum tipo) throws NoCatalogosException;
 	public Catalogo getByTipoAndAcronimo(String acronimo, CatalogoEnum tipo) throws NoCatalogosException;
+	public Catalogo getCatalogoPromedioHora();
 }

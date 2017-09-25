@@ -54,34 +54,30 @@
 						    	<f:facet name="#{msg.calculaPromedios}"></f:facet>
 						        <h:form id="calculaPromediosForm">
 						        	<p:messages autoUpdate="true" showDetail="true" id="mensajes" closable="true"/>
-						        		<p:panelGrid columns="2">
-						        			<p:outputLabel value="#{msg.fechaInicio}" for="fechaInicio" />
-							                <p:calendar value="#{calculaPromediosController.fechaInicio}" id="fechaInicio"
-							                	required="true" requiredMessage="#{msg.fechaInicioRequerida}"/>
-							                <p:outputLabel value="#{msg.fechaFin}" for="fechaFin" />
-							                <p:calendar value="#{calculaPromediosController.fechaFin}" id="fechaFin"
-							                	required="true" requiredMessage="#{msg.fechaFinRequerida}"/>
-							                
-							                <p:outputLabel value="#{msg.estacion}" for="estacionSelect"/>
-							            	<p:selectOneMenu id="estacionSelect"
-							            		value="#{estacionController.estacionSeleccionada}"
-							            		required="true"
-							            		requiredMessage="#{msg.estacionNoSeleccionada}"
-							            		converter="#{estacionConverter}" >
-							            		<f:selectItem itemLabel="#{msg.seleccione}" value="#{null}" noSelectionOption="true"/>
-							            		<f:selectItems value="#{estacionController.estacionesActivas}"
-							            			var="estacion" itemLabel="#{estacion.nombre}" itemValue="#{estacion}"/>
-							            		<p:ajax update="@this" event="change" />
-							            	</p:selectOneMenu>
-							                
-							                <p:outputLabel value=""></p:outputLabel>
-							                <p:commandButton value="#{msg.calculaPromedios}"
-							                	action="#{calculaPromediosController.calculaPromedios}"
-							                	process="@form"
-							                	update="@all" />
-							                <p:outputLabel value="" />
-							            </p:panelGrid>
-							            
+					        		<p:panelGrid columns="2">
+					        			<p:outputLabel value="#{msg.fechaInicio}" for="fechaInicio" />
+						                <p:calendar value="#{calculaPromediosController.fechaInicio}" id="fechaInicio"
+						                	required="true" requiredMessage="#{msg.fechaInicioRequerida}"/>
+						                <p:outputLabel value="#{msg.fechaFin}" for="fechaFin" />
+						                <p:calendar value="#{calculaPromediosController.fechaFin}" id="fechaFin"
+						                	required="true" requiredMessage="#{msg.fechaFinRequerida}"/>
+						                
+						                <p:outputLabel value="#{msg.estacion}" for="estacionSelect"/>
+						            	<p:selectOneMenu id="estacionSelect"
+						            		value="#{estacionController.estacionSeleccionada}"
+						            		required="true"
+						            		requiredMessage="#{msg.estacionNoSeleccionada}"
+						            		converter="#{estacionConverter}" >
+						            		<f:selectItem itemLabel="#{msg.seleccione}" value="#{null}" noSelectionOption="true"/>
+						            		<f:selectItems value="#{estacionController.estacionesActivas}"
+						            			var="estacion" itemLabel="#{estacion.nombre}" itemValue="#{estacion}"/>
+						            		<p:ajax update="@this" event="change" />
+						            	</p:selectOneMenu>
+						            </p:panelGrid>
+						            <p:commandButton value="#{msg.calculaPromedios}"
+						                	action="#{calculaPromediosController.calculaPromedios}"
+						                	process="@form"
+						                	update="@all" />
 						        </h:form>
 					        </p:panel>
 					      </div>

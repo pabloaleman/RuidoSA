@@ -24,6 +24,13 @@ public class ParametroDao {
 				.getResultList();
 	}
 	
+	public Parametro getById(Long id) {
+		List<Parametro> lista = em.createNamedQuery("Parametro.getParametroById", Parametro.class)
+				.setParameter("id", id)
+				.getResultList();
+		return lista.isEmpty() ? null : lista.get(0);
+	}
+	
 	public void guardaParametro(Parametro parametro)  throws ExisteParametroException {
 		if(parametro.getAccion() == AccionesEnum.PERSIST) {
 			List<Parametro> lista = getByCanalAndMedidaAndPerfilAndNivel(parametro);

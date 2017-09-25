@@ -1,11 +1,13 @@
 package com.sertec.lb.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import javax.inject.Named;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -32,6 +34,9 @@ import com.sertec.lb.ProcesaArchivoServicio;
 @Component
 @Named("procesaArchivoServicio")
 public class ProcesaArchivoServicioImpl implements ProcesaArchivoServicio {
+	
+	private static final Logger LOGGER = Logger.getLogger(ProcesaArchivoServicioImpl.class);
+	
 	@Autowired
 	MensajesServicio mensajesServicio;
 	@Autowired
@@ -69,6 +74,7 @@ public class ProcesaArchivoServicioImpl implements ProcesaArchivoServicio {
 		PreprocesoArchivoBean preprocesoArchivoBean = new PreprocesoArchivoBean();
 		String[] lineas = contenido.split("\n");
 		if(lineas.length < 5) {
+			LOGGER.warn("Archivo no tiene lineas necesarias para validar ser un archivo valido");
 			MensajesDeError mensajesDeError = mensajesServicio.getMensajeByAcronimo("error0002");
 			throw new CargaArchivoException(mensajesDeError.getDescripcion());
 		}
@@ -95,19 +101,21 @@ public class ProcesaArchivoServicioImpl implements ProcesaArchivoServicio {
 				lineaNivel = nLinea;
 			}
 			String[] columnasDatos = linea.split(";");
-			for(String columnaDato : columnasDatos) {
-				if(!cabeceraCanal && columnaDato != null && !columnaDato.isEmpty() && columnaDato.startsWith("Ch")) {
-					lineaCanal = nLinea;
-					cabeceraCanal = true;
-					break;
+			if(!cabeceraCanal || !cabeceraPerfil) {
+				for(String columnaDato : columnasDatos) {
+					if(!cabeceraCanal && columnaDato != null && !columnaDato.isEmpty() && columnaDato.startsWith("Ch")) {
+						lineaCanal = nLinea;
+						cabeceraCanal = true;
+						break;
+					}
+					
+					if(!cabeceraPerfil && columnaDato != null && !columnaDato.isEmpty() && columnaDato.startsWith("P")) {
+						lineaPerfil = nLinea;
+						cabeceraPerfil = true;
+						break;
+					}
+					
 				}
-				
-				if(!cabeceraPerfil && columnaDato != null && !columnaDato.isEmpty() && columnaDato.startsWith("P")) {
-					lineaPerfil = nLinea;
-					cabeceraPerfil = true;
-					break;
-				}
-				
 			}
 			if(cabeceraMedida && cabecaraFecha && cabeceraPerfil && cabeceraCanal) {
 				break;
@@ -115,12 +123,18 @@ public class ProcesaArchivoServicioImpl implements ProcesaArchivoServicio {
 		}
 		//reviso que hayan todas las cabeceras
 		if(!cabeceraMedida || !cabecaraFecha || !cabeceraPerfil || !cabeceraCanal) {
+			LOGGER.warn("Archivo no tiene las cabeceras, valores de cabeceras:");
+			LOGGER.warn("medida: " + cabeceraMedida);
+			LOGGER.warn("fecha: " + cabecaraFecha);
+			LOGGER.warn("perfil: " + cabeceraPerfil);
+			LOGGER.warn("canal: " + cabeceraCanal);
 			MensajesDeError mensajesDeError = mensajesServicio.getMensajeByAcronimo("error0002");
 			throw new CargaArchivoException(mensajesDeError.getDescripcion());
 		}
 		
 		//reviso que hayan datos en el archivo
 		if(lineaFecha == lineas.length) {
+			LOGGER.warn("El archivo no tiene datos");
 			MensajesDeError mensajesDeError = mensajesServicio.getMensajeByAcronimo("error0001");
 			throw new CargaArchivoException(mensajesDeError.getDescripcion());
 		}
@@ -148,6 +162,9 @@ public class ProcesaArchivoServicioImpl implements ProcesaArchivoServicio {
 		}
 		
 		if(lineaFecha == -1 || columnaFecha == -1) {
+			LOGGER.warn("El archivo no tiene fecha y/o columna, valores -1 significa no encontrado");
+			LOGGER.warn("lineaFecha: " + lineaFecha);
+			LOGGER.warn("columna fecha: " + columnaFecha);
 			MensajesDeError mensajesDeError = mensajesServicio.getMensajeByAcronimo("error0002");
 			throw new CargaArchivoException(mensajesDeError.getDescripcion());
 		}
@@ -157,9 +174,14 @@ public class ProcesaArchivoServicioImpl implements ProcesaArchivoServicio {
 			String medida = medidasArreglo[n];
 			String acronimoArmado;
 			if(medida.length() > 0
-					&& !medida.contains("Filename")
-					&& !medida.contains("Elapsed")) {
-				acronimoArmado = canalesArreglo[n] + perfilesArreglo[n] + medida + nivelesArreglo[n];
+					&& !medida.contains("FILENAME")
+					&& !medida.contains("ELAPSED")) {
+				if(nivelesArreglo.length == canalesArreglo.length) {
+					acronimoArmado = canalesArreglo[n] + perfilesArreglo[n] + medida + nivelesArreglo[n];					
+				} else {
+					acronimoArmado = canalesArreglo[n] + perfilesArreglo[n] + medida;
+				}
+				
 				Parametro param = mapaParametros.get(acronimoArmado);
 				if(null != param) {
 					DatoIndexArchivo dia = new DatoIndexArchivo();
@@ -173,16 +195,24 @@ public class ProcesaArchivoServicioImpl implements ProcesaArchivoServicio {
 					parametroAux.setCanal(new Catalogo(canalesArreglo[n]));
 					parametroAux.setPerfil(new Catalogo(perfilesArreglo[n]));
 					parametroAux.setMedida(new Catalogo(medida));
-					parametroAux.setNivel(new Catalogo(nivelesArreglo[n]));
+					if(nivelesArreglo.length == canalesArreglo.length) {
+						parametroAux.setNivel(new Catalogo(nivelesArreglo[n]));						
+					} else {
+						parametroAux.setNivel(null);
+					}
+					
 					preprocesoArchivoBean.getParametrosNoBdd().add(parametroAux);
 				}
 			}
 		}
 		
 		if(parametrosEnArchivo.isEmpty()) {
+			LOGGER.warn("No hay parámetros en la base de datos");
 			MensajesDeError mensajesDeError = mensajesServicio.getMensajeByAcronimo("error0002");
 			throw new CargaArchivoException(mensajesDeError.getDescripcion());
 		}
+		
+		Date fechaCalculo = new Date();
 		
 		// procedo a cargar los datos
 		for(int nLinea = lineaFecha + 1; nLinea < lineas.length; nLinea++) {
@@ -195,6 +225,7 @@ public class ProcesaArchivoServicioImpl implements ProcesaArchivoServicio {
 						datosLinea[columnaFecha],
 						formatoFecha));
 				dato.setFechaD(dato.getFecha().getTime());
+				dato.setFechaCarga(fechaCalculo);
 				int hora = Integer.parseInt(Fechas.dateToString(dato.getFecha(), "HH"));
 				dato.setHora(hora);
 				preprocesoArchivoBean.getDatos().add(dato);

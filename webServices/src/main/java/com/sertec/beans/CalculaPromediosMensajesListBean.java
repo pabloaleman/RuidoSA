@@ -3,7 +3,7 @@ package com.sertec.beans;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CalculaPromediosBean {
+public class CalculaPromediosMensajesListBean {
 	private List<String> mensajesError = new ArrayList<>();
 	private List<String> mensajesInformacion = new ArrayList<>();
 	private List<String> mensajesWarning = new ArrayList<>();

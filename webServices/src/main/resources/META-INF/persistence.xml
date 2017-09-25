@@ -18,13 +18,13 @@
                 
 		<properties>
 			<property name="hibernate.archive.autodetection" value="class, hbm"/>
-			<property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect" />
+			<property name="hibernate.dialect" value="${jdbc.hibernate.dialect}" />
 			<property name="hibernate.connection.release_mode" value="auto" />
-			<property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/ruido" />
-			<property name="javax.persistence.jdbc.password" value="postgres" />
+			<property name="javax.persistence.jdbc.url" value="${jdbc.url}" />
+			<property name="javax.persistence.jdbc.password" value="${jdbc.password}" />
 			<property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver" />
-			<property name="javax.persistence.jdbc.user" value="postgres" />
-			<property name="hibernate.hbm2ddl.auto" value="update" />
+			<property name="javax.persistence.jdbc.user" value="${jdbc.username}" />
+			<property name="hibernate.hbm2ddl.auto" value="${jdbc.hibernate.db.creation}" />
 		</properties>
 	</persistence-unit>
 </persistence>
