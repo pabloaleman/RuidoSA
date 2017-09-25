@@ -1,0 +1,191 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="title">Subir archivo</ui:define>
+
+    <ui:define name="head">
+           <script type="text/javascript">
+               //<![CDATA[
+               function skinChart() {
+                   this.cfg.shadow = false;
+                   this.cfg.title = '';
+                   this.cfg.seriesColors = ['#FFC107', '#03A9F4'];
+                   this.cfg.grid = {
+                       background: '#ffffff',
+                       borderColor: '#ffffff',
+                       gridLineColor: '#EEEEEE',
+                       shadow: false
+                   };
+                   this.cfg.axesDefaults = {
+                       rendererOptions: {
+                           textColor: '#212121'
+                       }
+                   };
+                   this.cfg.seriesDefaults = {
+                       shadow: false,
+                       lineWidth: 1,
+                       markerOptions: {
+                           shadow: false,
+                           size: 7,
+                           style: 'circle'
+                       }
+                   }
+               }
+               //]]>  
+           </script>
+           <style type="text/css">
+               .main-content {
+                   padding: 0;
+               }
+           </style>
+       </ui:define>
+
+    <ui:define name="content">
+    	<p:growl autoUpdate="true" showDetail="true" />
+    	<div class="ui-fluid">
+                <div class="ui-g">
+                    <div class="ui-g-12">
+                        <div class="card card-w-title">
+					    	<p:panel id="seleccionDeParametros" >
+						    	<f:facet name="#{msg.seleccionParametros}"></f:facet>
+						        <h:form id="seleccionParametrosForm">
+						        	<p:messages autoUpdate="true" showDetail="true" id="mensajes" closable="true"/>
+					        		<p:panelGrid columns="2">
+					        			<p:outputLabel value="#{msg.fechaInicio}" for="fechaInicio" />
+						                <p:calendar value="#{reporteController.fechaInicio}" id="fechaInicio"
+						                	required="true" requiredMessage="#{msg.fechaInicioRequerida}"/>
+						                <p:outputLabel value="#{msg.fechaFin}" for="fechaFin" />
+						                <p:calendar value="#{reporteController.fechaFin}" id="fechaFin"
+						                	required="true" requiredMessage="#{msg.fechaFinRequerida}"/>
+						                
+						                <p:outputLabel value="#{msg.estaciones}" for="estacionSelect"/>
+						            	<p:selectManyCheckbox id="estacionSelect"
+						            		value="#{reporteController.estacionesSeleccionadas}"
+						            		required="true"
+						            		requiredMessage="#{msg.estacionNoSeleccionada}"
+						            		converter="#{estacionConverter}" >
+						            		<f:selectItems value="#{estacionController.estacionesActivas}"
+						            			var="estacion"
+						            			itemLabel="#{estacion.nombre}"
+						            			itemValue="#{estacion}"/>
+						            	</p:selectManyCheckbox>
+						            	
+						            	<p:outputLabel value="#{msg.parametros}" for="parametrosSelect"/>
+						            	<p:selectManyCheckbox id="parametrosSelect"
+						            		value="#{reporteController.parametrosSeleccionados}"
+						            		required="true"
+						            		requiredMessage="#{msg.parametrosNoSeleccionados}"
+						            		converter="#{parametroConverter}" >
+						            		<f:selectItems value="#{parametrosReporteController.parametros}"
+						            			var="parametro"
+						            			itemLabel="#{parametro.descripcion}"
+						            			itemValue="#{parametro}"/>
+						            	</p:selectManyCheckbox>
+						            	
+						            	<p:outputLabel value="#{msg.tiposDato}" for="tiposDatoSelect"/>
+						            	<p:selectManyCheckbox id="tiposDatoSelect"
+						            		value="#{reporteController.tipoDatosSelecionados}"
+						            		required="true"
+						            		requiredMessage="#{msg.tiposDatoNoSeleccionado}"
+						            		converter="#{catalogoConverter}" >
+						            		<f:selectItems value="#{catalogoReporteController.tiposDato}"
+						            			var="tipoDato"
+						            			itemLabel="#{tipoDato.descripcion}"
+						            			itemValue="#{tipoDato}"/>
+						            	</p:selectManyCheckbox>
+						            	
+						            	
+						            	
+						            </p:panelGrid>
+						            <p:commandButton value="#{msg.buscar}"
+						                	action="#{reporteController.procesarReportePromedios}"
+						                	process="@form"
+						                	update="@all" />
+						        </h:form>
+					        </p:panel>
+					        <h:form id="formTabla">
+					        <p:dataTable id="tablaDatos"
+					        	value="#{reporteController.promedios}" var="promedio"
+					        	emptyMessage="#{msg.noDatos}"
+					        	 rows="10"
+                         		paginator="true"
+                         		paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} {Exporters}"
+                         		rowsPerPageTemplate="10,50,100">
+                         		
+                         		<p:column headerText="#{msg.tipoDeDato}">
+                         			<p:outputLabel value="#{promedio.tipoDato.descripcion}" />
+                         		</p:column>
+
+					        	<p:column headerText="#{msg.estacion}">
+					        		<p:outputLabel value="#{promedio.estacion.nombre}" />
+					        	</p:column>
+					        	
+					        	<p:column headerText="#{msg.parametro}">
+					        		<p:outputLabel value="#{promedio.parametro.descripcion}" />
+					        	</p:column>
+					        						        	
+					        	<p:column headerText="#{msg.fecha}">
+					        		<p:outputLabel value="#{promedio.fecha}" />
+					        	</p:column>
+					        	
+					        	<p:column headerText="#{msg.valor}">
+					        		<p:outputLabel value="#{promedio.promedio}" >
+					        			<f:convertNumber locale="es-ES" pattern="#0.000"  />
+					        		</p:outputLabel>
+					        	</p:column>
+					        	
+					        	<p:column headerText="#{msg.maximo}">
+					        		<p:outputLabel value="#{promedio.maximo}" >
+					        			<f:convertNumber locale="es-ES" pattern="#0.000"  />
+					        		</p:outputLabel>
+					        	</p:column>
+					        	
+					        	<p:column headerText="#{msg.fechaMaximo}">
+					        		<p:outputLabel value="#{promedio.fechaMaximo}" />
+					        	</p:column>
+					        	
+					        	<p:column headerText="#{msg.minimo}">
+					        		<p:outputLabel value="#{promedio.minimo}" >
+					        			<f:convertNumber locale="es-ES" pattern="#0.000"  />
+					        		</p:outputLabel>
+					        	</p:column>
+					        	
+					        	<p:column headerText="#{msg.fechaMinimo}">
+					        		<p:outputLabel value="#{promedio.fechaMaximo}" />
+					        	</p:column>
+					        	
+					        	
+					        	<f:facet name="{Exporters}">
+            <h:commandLink>
+                <p:graphicImage name="/demo/images/excel.png" width="24"/>excel
+                <p:dataExporter type="xls" target="tablaDatos" fileName="promedios" />
+            </h:commandLink>
+ 
+            <h:commandLink>
+                <p:graphicImage name="/demo/images/pdf.png" width="24"/>pdf
+                <p:dataExporter type="pdf" target="tablaDatos" fileName="promedios"/>
+            </h:commandLink>
+ 
+            <h:commandLink>
+                <p:graphicImage name="/demo/images/csv.png" width="24"/>csv
+                <p:dataExporter type="csv" target="tablaDatos" fileName="promedios" />
+            </h:commandLink>
+ 
+            <h:commandLink>
+                <p:graphicImage name="/demo/images/xml.png" width="24"/>xml
+                <p:dataExporter type="xml" target="tbl" fileName="promedios" />
+            </h:commandLink>
+        </f:facet>
+					        </p:dataTable>
+					        </h:form>
+					      </div>
+					 </div>
+				</div>
+			</div>
+    </ui:define>
+
+</ui:composition>
