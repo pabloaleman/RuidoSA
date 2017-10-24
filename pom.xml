@@ -71,7 +71,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
-                <jdbc.url>jjdbc:postgresql://localhost:5432/ruido</jdbc.url>
+                <jdbc.url>jdbc:postgresql://localhost:5432/ruido</jdbc.url>
                 <jdbc.hibernate.dialect>org.hibernate.dialect.PostgreSQLDialect</jdbc.hibernate.dialect>
                 <jdbc.hibernate.db.creation>update</jdbc.hibernate.db.creation>
                 <jdbc.driver>org.postgresql.Driver</jdbc.driver>
