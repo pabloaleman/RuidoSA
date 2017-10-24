@@ -90,11 +90,11 @@ public class ProcesaArchivoServicioImpl implements ProcesaArchivoServicio {
 		int lineaFecha = -1;
 		for(int nLinea = 0; nLinea < lineas.length; nLinea++) {
 			String linea = lineas[nLinea];
-			if(linea.contains("Elapsed")) {
+			if(linea.toUpperCase().contains("ELAPSED") || linea.toUpperCase().contains("DURATION")) {
 				cabeceraMedida = true;
 				lineaMedida= nLinea;
 			}
-			if(linea.contains("Date")) {
+			if(linea.toUpperCase().contains("DATE")) {
 				cabecaraFecha = true;
 				lineaFecha = nLinea;
 				//la linea de nivel es la misma linea de la fecha
@@ -175,12 +175,17 @@ public class ProcesaArchivoServicioImpl implements ProcesaArchivoServicio {
 			String acronimoArmado;
 			if(medida.length() > 0
 					&& !medida.contains("FILENAME")
-					&& !medida.contains("ELAPSED")) {
+					&& !medida.contains("NAME")
+					&& !medida.contains("ELAPSED")
+					&& !medida.contains("DURATION")
+					&& !medida.contains("NO.")
+					&& !medida.contains("DATE")) {
 				if(nivelesArreglo.length == canalesArreglo.length) {
 					acronimoArmado = canalesArreglo[n] + perfilesArreglo[n] + medida + nivelesArreglo[n];					
 				} else {
 					acronimoArmado = canalesArreglo[n] + perfilesArreglo[n] + medida;
 				}
+				LOGGER.info("Parametro armado: " + acronimoArmado);
 				
 				Parametro param = mapaParametros.get(acronimoArmado);
 				if(null != param) {

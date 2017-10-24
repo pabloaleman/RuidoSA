@@ -367,11 +367,6 @@
 		<finalName>${app.final.name}</finalName>
 		<resources>
             <resource>
-                <directory>src/main/resources/META-INF/</directory>
-                <targetPath>${basedir}/target/${app.final.name}/META-INF</targetPath>
-                <filtering>true</filtering>
-            </resource>
-            <resource>
                 <directory>src/main/resources/</directory>
                 <includes>
                     <include>**/*.properties</include>
@@ -416,6 +411,16 @@
 							<directory>${project.build.sourceDirectory}</directory>
 							<targetPath>sources</targetPath>
 						</resource>
+						
+						<resource>
+		                    <directory>${basedir}/src/main/webapp/WEB-INF</directory>
+		                    <filtering>true</filtering>
+		                    <targetPath>WEB-INF</targetPath>
+		                    <includes>
+		                        <include>**/*.xml</include>
+		                     </includes>
+		                </resource>
+                
 					</webResources>
 				</configuration>
 			</plugin>

@@ -58,8 +58,8 @@
 	
 	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
 		destroy-method="close" p:driverClass="org.postgresql.Driver" 
-		p:jdbcUrl="jdbc:postgresql://localhost:5432/ruido"
-		p:user="postgres"
-		p:password="postgres" p:acquireIncrement="5" p:maxIdleTime="60"
+		p:jdbcUrl="${jdbc.url}"
+		p:user="${jdbc.username}"
+		p:password="${jdbc.password}" p:acquireIncrement="5" p:maxIdleTime="60"
 		p:maxPoolSize="20" p:maxStatements="50" p:minPoolSize="5" />
 	</beans>

@@ -183,7 +183,7 @@ public class Parametro implements Serializable {
 	
 	public void calculaAccronimo() {
 		String nivelLocal = "";
-		if((nivel != null && nivel.getAcronimo().length() > 0) || nivel.getAcronimo().equals("NOAPLICA")) {
+		if((nivel != null && nivel.getAcronimo().length() > 0) || nivel.getAcronimo().equals("NAN")) {
 			nivelLocal = nivel.getAcronimo().trim().replace("\t", "").replace(" ", "");
 		}
 		String acronimoL = canal.getAcronimo().trim().replace("\t", "").replace(" ", "")
