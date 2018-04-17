@@ -1,7 +1,12 @@
 package com.sertecimedco.ruido;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.apache.log4j.Logger;
 
+import com.megasoftworks.gl.manage.Archivos;
 import com.megasoftworks.gl.util.PropertiesReader;
 import com.megasoftworks.gl.util.PropertiesReload;
 
@@ -19,6 +24,9 @@ public class Run {
 	public static String ESTACION;
 	public static String pathPorProcesar;
 	public static String pathProcesados;
+	public static String FILE_HISTORICOS;
+	
+	public static List<String> MAPA_ARCHIVOS_SUBIDOS = new ArrayList<>();
 	
 	
 	public static void cargaParametros() {
@@ -36,6 +44,14 @@ public class Run {
 		SERVICIO_SUBE_ARCHIVO = properties.getProperty("SERVICIO_SUBE_ARCHIVO");
 		ESTACION = properties.getProperty("ESTACION");
 		FRECUENCIA = properties.getProperty("FRECUENCIA");
+		FILE_HISTORICOS = properties.getProperty("FILE_HISTORICOS");
+		cargaArchivosSubidosDeArchivo();
 		logger.info("FRECUENCIA: " + FRECUENCIA);
+	}
+	
+	public static void cargaArchivosSubidosDeArchivo() {
+		String archivosSubidosArchivo = Archivos.leerArchivo(FILE_HISTORICOS);
+		String[] archivosSubidosArray = archivosSubidosArchivo.split("\n");
+		MAPA_ARCHIVOS_SUBIDOS = Arrays.asList(archivosSubidosArray);
 	}
 }

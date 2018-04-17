@@ -126,7 +126,7 @@ public class CalculaPromediosServiceImpl implements CalculaPromediosService {
 		if(datos.size() >= nMinimoDatos) {
 			DatoCalculado datoCalculado = new DatoCalculado();
 			datoCalculado.setArchivoDatos(datos.get(0).getArchivoDatos());
-			double[] datosArray = new double[datos.size()];
+			Double[] datosArray = new Double[datos.size()];
 			//calculo los maximos y minimos
 			for(int n = 0; n < datos.size(); n++) {
 				Dato dato = datos.get(n);
@@ -142,7 +142,7 @@ public class CalculaPromediosServiceImpl implements CalculaPromediosService {
 			}
 			//calculo el promedio
 			//datoCalculado.setPromedio(new Mean().evaluate(datosArray));
-			datoCalculado.setPromedio(Averages.logAvg(datosArray));
+			datoCalculado.setPromedio(Averages.getLogarithmicAverage(datos));
 			datoCalculado.setEstacion(estacion);
 			datoCalculado.setFecha(fechaInicio);
 			datoCalculado.setFechaD(fechaInicio.getTime());

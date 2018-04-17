@@ -1,5 +1,7 @@
 package com.sertec.domain;
 
+import com.megasoftworks.gl.math.Promediable;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -28,7 +30,7 @@ import javax.validation.constraints.NotNull;
 	@NamedQuery(name = "Dato.getDatosByEstacionAndParametroAndFechas", query = "SELECT d FROM Dato d where d.estado = 'Activo' and d.estacion = :estacion and d.parametro = :parametro and d.fecha between :fInicio and :fFin order by d.fecha"),
     @NamedQuery(name = "Dato.findDato", query = "SELECT d FROM Dato d where d.estado = 'Activo' and d.parametro = :parametro and d.tipoDato = :tipoDato and d.fechaD = :fechaD")})
 
-public class Dato implements Serializable {
+public class Dato implements Serializable, Promediable {
 	private static final long serialVersionUID = 1L;
 	@Id
 	@Basic(optional = false)
@@ -183,7 +185,10 @@ public class Dato implements Serializable {
 	public void setFechaCarga(Date fechaCarga) {
 		this.fechaCarga = fechaCarga;
 	}
-	
-	
 
+
+	@Override
+	public Double getToAvgValue() {
+		return  valor;
+	}
 }
